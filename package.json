@@ -20,6 +20,8 @@
     "@walletconnect/qrcode-modal": "^1.8.0",
     "ethers": "^5.7.1",
     "framer-motion": "^7.5.3",
+    "graphql": "^16.6.0",
+    "graphql-request": "^5.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

@@ -10,14 +10,8 @@ export const theme = extendTheme({
     // }
   },
   colors: {
-    primary: "#ffbe0b",
-    secondary: "#3A86FF",
+    first: "#ffbe0b",
+    second: "#3A86FF",
     third: "#FF006E",
-    defiForPeople: "#3A0CA3",
-    ioled: "#05DBB2",
-    botonVerde: "#FFBE0B",
-  },
-  config: {
-    initialColorMode: "light",
   },
 });
