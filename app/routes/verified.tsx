@@ -1,4 +1,4 @@
-import type { ActionFunction, LoaderFunction } from "@remix-run/node";
+import { ActionFunction, LoaderFunction, redirect } from "@remix-run/node";
 
 import { db } from "~/utils/db.server";
 
@@ -39,7 +39,28 @@ export const action: ActionFunction = async ({ request }) => {
 
   if (!address || typeof address !== "string") return null;
 
-  return null;
+  //   return null;
+
+  try {
+    const verified = await db.verified.findUnique({
+      where: {
+        address,
+      },
+    });
+
+    await db.verified.update({
+      where: {
+        address: address,
+      },
+      data: {
+        indexVM: verified!.indexVM + 1,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  }
+
+  return redirect(`/verified`);
 };
 
 export default function Verified() {
