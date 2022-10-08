@@ -9,8 +9,9 @@ import { commitSession, getSession } from "~/bff/session";
 import WalletConnect from "@walletconnect/client";
 import QRCodeModal from "@walletconnect/qrcode-modal";
 
-import { Center, Text, Box, Image, Button } from "@chakra-ui/react";
 import { subscribeToEvents } from "~/web3/wallet-connect";
+
+import { Center, Text, Box, Image, Button } from "@chakra-ui/react";
 
 export const action: ActionFunction = async ({ request }) => {
   const session = await getSession(request.headers.get("Cookie"));
