@@ -8,7 +8,7 @@ import {
   Input,
   FormControl,
 } from "@chakra-ui/react";
-import { LoaderFunction } from "@remix-run/node";
+import type { LoaderFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { comparePoaps } from "~/web3/poap";
 

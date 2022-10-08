@@ -3,7 +3,7 @@ import { extendTheme } from "@chakra-ui/react";
 export const theme = extendTheme({
   fonts: {
     heading: "Plus Jakarta Sans, sans-serif",
-    body: "Plus Jakarta Sans, sans-serif",
+    body: "Montserrat, sans-serif",
   },
   colors: {
     first: "#ffbe0b",
