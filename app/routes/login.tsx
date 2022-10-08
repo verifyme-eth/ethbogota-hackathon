@@ -2,7 +2,7 @@ import { Center, Text, Box, Image, Button } from "@chakra-ui/react";
 import { db } from "~/utils/db.server";
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import { Outlet, useSubmit, useTransition } from "@remix-run/react";
+import { Outlet } from "@remix-run/react";
 
 export const action: ActionFunction = async ({ request }) => {
   const form = await request.formData();
@@ -23,12 +23,8 @@ export const loader: LoaderFunction = async () => {
 };
 
 export default function Login() {
-  const submit = useSubmit();
-  const transition = useTransition();
-
   return (
     <Box>
-      <Outlet />
       <Box>
         <Center>
           <Text
@@ -63,8 +59,6 @@ export default function Login() {
             color="white"
             rounded={"full"}
             fontSize="23px"
-
-            // _hover={{ backgroundColor: "#000000" }}
           >
             Wallet Connect
           </Button>

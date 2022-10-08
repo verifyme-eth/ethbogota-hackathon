@@ -1,13 +1,26 @@
-import type { LoaderFunction } from "@remix-run/server-runtime";
-import { useLoaderData } from "@remix-run/react";
+import {
+  ActionFunction,
+  LoaderFunction,
+  redirect,
+} from "@remix-run/server-runtime";
+import { useLoaderData, useSubmit } from "@remix-run/react";
 
 import { GraphQLClient } from "graphql-request";
 
 import { GetProfile } from "~/web3/lens";
 import { comparePoaps } from "~/web3/poap";
 
-import { Avatar, Box, Center, Divider, Flex, Text } from "@chakra-ui/react";
+import {
+  Avatar,
+  Box,
+  Button,
+  Center,
+  Divider,
+  Flex,
+  Text,
+} from "@chakra-ui/react";
 import { transformToIpfsCoverImageUrl } from "~/web3/ipfs";
+import { db } from "~/utils/db.server";
 
 export const loader: LoaderFunction = async ({ params }) => {
   // TODO: get the address from cookie session
@@ -28,8 +41,57 @@ export const loader: LoaderFunction = async ({ params }) => {
   return { userProfile, poapsComparted };
 };
 
+export const action: ActionFunction = async ({ request }) => {
+  const form = await request.formData();
+
+  const address = form.get("address");
+  const poaps = form.get("poaps");
+
+  if (!address || typeof address !== "string") return null;
+  if (!poaps || typeof poaps !== "string") return null;
+
+  console.log(poaps);
+
+  try {
+    const verified = await db.verified.findUnique({
+      where: {
+        address,
+      },
+    });
+
+    await db.verified.update({
+      where: {
+        address: address,
+      },
+      data: {
+        indexVM: verified!.indexVM + Number(poaps),
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  }
+
+  return redirect(`/verified`);
+};
+
 export default function Profile() {
   const { userProfile, poapsComparted } = useLoaderData();
+
+  const submit = useSubmit();
+
+  const handleVerify = async () => {
+    const formData = new FormData();
+
+    formData.append("address", "0x3aeC2276326CDC8E9a8A4351c338166e67105AC3");
+    formData.append("poaps", poapsComparted.length);
+
+    submit(formData, {
+      action: `${userProfile.handle}/?index`,
+      method: "post",
+      encType: "application/x-www-form-urlencoded",
+      replace: true,
+    });
+  };
 
   return (
     <Box>
@@ -116,6 +178,18 @@ export default function Profile() {
           Poaps compartidos: {poapsComparted.length}
         </Text>
       </Box>
+
+      <Center mt="20px">
+        <Button
+          backgroundColor="second"
+          color="white"
+          rounded={"full"}
+          fontSize="18px"
+          onClick={handleVerify}
+        >
+          Verificar
+        </Button>
+      </Center>
     </Box>
   );
 }
