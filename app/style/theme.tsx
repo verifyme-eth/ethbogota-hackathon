@@ -8,7 +8,7 @@ export const theme = extendTheme({
   colors: {
     first: "#ffbe0b",
     second: "#3A86FF",
-    third: "#FF006E",
+    third: "#FCAF17",
     lensDark: "#00501E",
   },
 });
