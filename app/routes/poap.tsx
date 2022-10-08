@@ -6,18 +6,25 @@ import {
   Text,
   UnorderedList,
   Input,
+  FormControl,
 } from "@chakra-ui/react";
 import { LoaderFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { comparePoaps } from "~/web3/poapVerification";
 
 export const loader: LoaderFunction = async () => {
-  let addressMain = "nate-d3v.eth";
+  let addressMain = "gutybv.eth";
   let addressCompared = "cristianvaldivia.eth";
 
   let common = await comparePoaps(addressMain, addressCompared);
 
   return { common };
+};
+
+export const action = async (req: any) => {
+  const form = await req.formData();
+  const adress1 = form.get("adr1");
+  const adress2 = form.get("adr2");
 };
 
 export default function Index() {
@@ -31,8 +38,17 @@ export default function Index() {
           </Text>
         </Center>
       </Box>
-      <Box w="30%">
-        <Input placeholder="Adress 1" />
+      <Box>
+        <Center>
+          <Box w="30%">
+            <form method="POST">
+              <FormControl>
+                <Input name="adr1" id="adr1" placeholder="Adress 1" />
+                <Input name="adr2" id="adr2" placeholder="Adress 2" />
+              </FormControl>
+            </form>
+          </Box>
+        </Center>
       </Box>
       <Box>
         <Center>
