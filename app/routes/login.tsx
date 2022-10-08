@@ -3,6 +3,11 @@ import { db } from "~/utils/db.server";
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { Outlet, useSubmit, useTransition } from "@remix-run/react";
+import { Link, Scripts } from "@remix-run/react";
+import WalletConnect from "@walletconnect/client";
+import QRCodeModal from "@walletconnect/qrcode-modal";
+
+import { subscribeToEvents } from "~/blockchain/wallet-connect";
 
 export const action: ActionFunction = async ({ request }) => {
   const form = await request.formData();
@@ -11,7 +16,7 @@ export const action: ActionFunction = async ({ request }) => {
 
   if (!address || typeof address !== "string") return null;
 
-  return redirect(`/dashboard`);
+  return null;
 };
 
 export const loader: LoaderFunction = async () => {
@@ -24,11 +29,49 @@ export const loader: LoaderFunction = async () => {
 
 export default function Login() {
   const submit = useSubmit();
-  const transition = useTransition();
+
+  const handleLoginWalletConnect = async () => {
+    // console.log(
+    //   "[browser][handleLoginWalletConnect] Waiting connection with walletConnect ..."
+    // );
+    // bridge url
+    const bridge = "https://bridge.walletconnect.org";
+
+    // create new connector
+    const connector: WalletConnect = new WalletConnect({
+      bridge, // Required
+      qrcodeModal: QRCodeModal,
+    });
+
+    // check if already connected
+    if (!connector.connected) {
+      console.log("[browser][handleLoginWalletConnect] Creating session ...");
+      // create new session
+      await connector.createSession();
+    } else {
+      // console.log("[browser][handleLoginWalletConnect] connector:", connector);
+
+      const address = connector.accounts[0];
+
+      // console.log("[browser][handleLoginWalletConnect] address:", address);
+
+      const formData = new FormData();
+
+      formData.append("address", address);
+      formData.append("connected", "true");
+
+      submit(formData, {
+        action: "/login/?index",
+        method: "post",
+        encType: "application/x-www-form-urlencoded",
+        replace: true,
+      });
+    }
+  };
 
   return (
     <Box>
-      <Outlet />
+      {/* <Outlet /> */}
       <Box>
         <Center>
           <Text
@@ -57,6 +100,7 @@ export default function Login() {
       <Box pt={40}>
         <Center>
           <Button
+            onClick={handleLoginWalletConnect}
             backgroundColor={"#1E7EFD"}
             width="350px"
             height="70px"
