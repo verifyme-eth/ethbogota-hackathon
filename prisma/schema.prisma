@@ -17,3 +17,8 @@ model User {
   ensName String @default("")
   balance String @default("0")
 } 
+
+model Verified {
+  address String @id
+  indexVM Int @default(0)
+}
