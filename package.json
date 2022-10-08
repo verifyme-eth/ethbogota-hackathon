@@ -7,9 +7,14 @@
     "start": "remix-serve build"
   },
   "dependencies": {
+    "@chakra-ui/react": "^2.3.5",
+    "@emotion/react": "^11.10.4",
+    "@emotion/server": "^11.10.0",
+    "@emotion/styled": "^11.10.4",
     "@remix-run/node": "^1.7.2",
     "@remix-run/react": "^1.7.2",
     "@remix-run/serve": "^1.7.2",
+    "framer-motion": "^7.5.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
