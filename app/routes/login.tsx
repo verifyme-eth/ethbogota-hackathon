@@ -136,7 +136,10 @@ export default function Login() {
             pt={10}
             pb={5}
           >
-            The autentication <Text color="#71AA43">for all the world</Text>
+            The autentication
+            <Text as="span" color="#71AA43">
+              for all the world
+            </Text>
           </Text>
         </Center>
       </Box>
