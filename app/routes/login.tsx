@@ -1,6 +1,6 @@
 import type { ActionFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import { useSubmit } from "@remix-run/react";
+import { useSubmit, useTransition } from "@remix-run/react";
 
 import { db } from "~/utils/db.server";
 
@@ -72,6 +72,7 @@ export const action: ActionFunction = async ({ request }) => {
 
 export default function Login() {
   const submit = useSubmit();
+  const transition = useTransition();
 
   const handleLoginWalletConnect = async () => {
     console.log(
@@ -120,54 +121,72 @@ export default function Login() {
     <Box>
       <Box pt={10}>
         <Center>
+          <Image src="./assets/LogoCompleto.png" width="50%" />
+        </Center>
+      </Box>
+
+      {transition.state === "idle" && (
+        <>
           <Box>
-            <Image src="./assets/LogoCompleto.png" />
+            <Center p={6}>
+              <Text
+                fontSize="30px"
+                fontWeight={700}
+                mt="30"
+                color="primary"
+                align="center"
+                pb={5}
+              >
+                The autentication{" "}
+                <Text as="span" color="#71AA43">
+                  for all the world
+                </Text>
+              </Text>
+            </Center>
           </Box>
-        </Center>
-      </Box>
-      <Box>
-        <Center>
-          <Text
-            fontSize="30px"
-            fontWeight={700}
-            mt="30"
-            color="primary"
-            align="center"
-            pt={10}
-            pb={5}
-          >
-            The autentication
-            <Text as="span" color="#71AA43">
-              for all the world
-            </Text>
+
+          <Box>
+            <Center>
+              <Box boxSize="270px">
+                <Image src="./assets/Cuadrados.png" alt="hola" />
+              </Box>
+            </Center>
+          </Box>
+
+          <Box pt={16}>
+            <Center>
+              <Button
+                backgroundColor="#1E7EFD"
+                width="250px"
+                height="65px"
+                color="white"
+                rounded="full"
+                fontSize="18px"
+                onClick={handleLoginWalletConnect}
+              >
+                <Flex pr="20px" flex="">
+                  <Image src="./assets/walletcon.png" />
+                </Flex>
+                Wallet Connect
+              </Button>
+            </Center>
+          </Box>
+        </>
+      )}
+
+      {transition.state === "loading" && (
+        <Box>
+          <Text textAlign="center" fontSize="26px" color="lensDark" mt="25px">
+            Connecting with garden
           </Text>
-        </Center>
-      </Box>
-      <Box>
-        <Center>
-          <Box boxSize="270px" pt={20}>
-            <Image src="./assets/Cuadrados.png" alt="hola" />
-          </Box>
-        </Center>
-      </Box>
-      <Box pt={36}>
-        <Center>
-          <Button
-            backgroundColor={"#1E7EFD"}
-            width="350px"
-            height="65px"
-            color="white"
-            rounded={"full"}
-            fontSize="23px"
-            onClick={handleLoginWalletConnect}
-          >
-            <Flex pr="20px" flex="">
-              <Image src="./assets/walletcon.png" />
-            </Flex>
-            Wallet Connect
-          </Button>
-        </Center>
-      </Box>
+
+          <Center>
+            <Box mt="20px">
+              <Image src="./assets/lens-loading.gif" rounded="2xl" />
+            </Box>
+          </Center>
+        </Box>
+      )}
     </Box>
   );
 }
