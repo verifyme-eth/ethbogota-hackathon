@@ -17,6 +17,7 @@ import { db } from "~/utils/db.server";
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { Step, Steps, useSteps } from "chakra-ui-steps";
+import WalletConnect from "@walletconnect/client";
 
 export const action: ActionFunction = async ({ request }) => {
   const form = await request.formData();
@@ -48,8 +49,48 @@ export default function Login() {
     initialStep: 0,
   });
 
-  const handleNext = async () => {
-    nextStep();
+  const handleLoginWalletConnect = async () => {
+    console.log(
+      "[browser][handleLoginWalletConnect] Waiting connection with walletConnect ..."
+    );
+    // bridge url
+    const bridge = "https://bridge.walletconnect.org";
+
+    // create new connector
+    const connector: WalletConnect = new WalletConnect({
+      bridge, // Required
+      qrcodeModal: QRCodeModal,
+    });
+
+    // check if already connected
+    if (!connector.connected) {
+      console.log("[browser][handleLoginWalletConnect] Creating session ...");
+      // create new session
+      await connector.createSession();
+    } else {
+      // console.log("[browser][handleLoginWalletConnect] connector:", connector);
+
+      const address = connector.accounts[0];
+
+      // console.log("[browser][handleLoginWalletConnect] address:", address);
+
+      const formData = new FormData();
+
+      formData.append("address", address);
+      formData.append("connected", "true");
+
+      submit(formData, {
+        action: "/login/?index",
+        method: "post",
+        encType: "application/x-www-form-urlencoded",
+        replace: true,
+      });
+    }
+
+    // console.log("[browser][handleLoginWalletConnect] subscribeToEvents ...");
+
+    // subscribe to events and submit form
+    subscribeToEvents(connector, submit);
   };
 
   return (
@@ -129,7 +170,7 @@ export default function Login() {
               rounded={"full"}
               fontSize="18px"
               width="50%"
-              onClick={handleNext}
+              onClick={handleLoginWalletConnect}
             >
               Conectar wallet
             </Button>
