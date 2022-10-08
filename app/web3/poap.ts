@@ -1,19 +1,21 @@
 async function comparePoaps(address1: string, address2: string) {
-  let data1 = await fetch(`https://api.poap.tech/actions/scan/${address1}`, {
+  const data1 = await fetch(`https://api.poap.tech/actions/scan/${address1}`, {
     headers: {
       "Content-Type": "application/json",
     },
   });
-  let res1 = await data1.json();
 
-  let data2 = await fetch(`https://api.poap.tech/actions/scan/${address2}`, {
+  const res1 = await data1.json();
+
+  const data2 = await fetch(`https://api.poap.tech/actions/scan/${address2}`, {
     headers: {
       "Content-Type": "application/json",
     },
   });
-  let res2 = await data2.json();
 
-  let arr1 = [];
+  const res2 = await data2.json();
+
+  const arr1 = [];
 
   for (const el in res1) {
     if (res1.hasOwnProperty(el)) {
@@ -21,7 +23,7 @@ async function comparePoaps(address1: string, address2: string) {
     }
   }
 
-  let arr2: any[] = [];
+  const arr2: any[] = [];
 
   for (const el in res2) {
     if (res2.hasOwnProperty(el)) {
@@ -29,7 +31,7 @@ async function comparePoaps(address1: string, address2: string) {
     }
   }
 
-  let common = arr1.filter((x) => arr2.includes(x) && x);
+  const common = arr1.filter((x) => arr2.includes(x) && x);
 
   return common;
 }

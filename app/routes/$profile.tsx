@@ -73,22 +73,46 @@ export default function Profile() {
         </Flex>
       </Center>
 
-      <Box>
-        <Text fontSize="30px" fontWeight="bold" color="black">
+      <Box mt="20px">
+        <Text
+          textAlign="center"
+          fontSize="30px"
+          fontWeight="bold"
+          color="black"
+        >
           {userProfile.name}
         </Text>
 
-        <Text fontSize="15px" fontWeight="light" color="#767676">
+        <Text
+          textAlign="center"
+          fontSize="15px"
+          fontWeight="light"
+          color="#767676"
+        >
           @{userProfile.handle}
         </Text>
 
-        <Text fontSize="12px" fontWeight="light" color="#666666">
+        <Text
+          textAlign="center"
+          fontSize="12px"
+          fontWeight="light"
+          color="#666666"
+          p="6px"
+        >
           {userProfile.bio}
         </Text>
 
-        <Divider />
+        <Center mt="20px">
+          <Divider w="80%" />
+        </Center>
 
-        <Text fontSize="20px" fontWeight="light" color="second">
+        <Text
+          textAlign="center"
+          fontSize="20px"
+          fontWeight="light"
+          color="second"
+          mt="20px"
+        >
           Poaps compartidos: {poapsComparted.length}
         </Text>
       </Box>
