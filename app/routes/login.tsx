@@ -1,28 +1,14 @@
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
+import { useSubmit } from "@remix-run/react";
 
 import { db } from "~/utils/db.server";
 
 import WalletConnect from "@walletconnect/client";
 import QRCodeModal from "@walletconnect/qrcode-modal";
 
-import {
-  Center,
-  Text,
-  Box,
-  Image,
-  Button,
-  useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalHeader,
-  ModalCloseButton,
-  ModalContent,
-  ModalBody,
-  ModalFooter,
-} from "@chakra-ui/react";
+import { Center, Text, Box, Image, Button } from "@chakra-ui/react";
 import { subscribeToEvents } from "~/web3/wallet-connect";
-import { useSubmit } from "@remix-run/react";
 
 export const action: ActionFunction = async ({ request }) => {
   const form = await request.formData();
@@ -64,11 +50,11 @@ export default function Login() {
       // create new session
       await connector.createSession();
     } else {
-      // console.log("[browser][handleLoginWalletConnect] connector:", connector);
+      console.log("[browser][handleLoginWalletConnect] connector:", connector);
 
       const address = connector.accounts[0];
 
-      // console.log("[browser][handleLoginWalletConnect] address:", address);
+      console.log("[browser][handleLoginWalletConnect] address:", address);
 
       const formData = new FormData();
 
@@ -82,8 +68,6 @@ export default function Login() {
         replace: true,
       });
     }
-
-    // console.log("[browser][handleLoginWalletConnect] subscribeToEvents ...");
 
     // subscribe to events and submit form
     subscribeToEvents(connector, submit);
@@ -125,7 +109,7 @@ export default function Login() {
             color="white"
             rounded={"full"}
             fontSize="23px"
-            // onClick={onOpen}
+            onClick={handleLoginWalletConnect}
           >
             Wallet Connect
           </Button>
