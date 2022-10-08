@@ -7,6 +7,9 @@ import {
   UnorderedList,
   Input,
   FormControl,
+  AvatarGroup,
+  Avatar,
+  SimpleGrid,
 } from "@chakra-ui/react";
 import { LoaderFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
@@ -16,9 +19,12 @@ export const loader: LoaderFunction = async () => {
   let addressMain = "gutybv.eth";
   let addressCompared = "cristianvaldivia.eth";
 
-  let common = await comparePoaps(addressMain, addressCompared);
+  let { common, arrLength, arrDiff } = await comparePoaps(
+    addressMain,
+    addressCompared
+  );
 
-  return { common };
+  return { common, arrLength, arrDiff };
 };
 
 export const action = async (req: any) => {
@@ -27,8 +33,47 @@ export const action = async (req: any) => {
   const adress2 = form.get("adr2");
 };
 
+type PoapContainerProps = {
+  arr: any;
+  length: number;
+  diff: number;
+};
+
+function PoapContainer({ arr, length, diff }: PoapContainerProps) {
+  return (
+    <Box pt="1rem" pb="1rem">
+      <SimpleGrid columns={3} spacing="1.5rem">
+        {length > 11 ? (
+          <>
+            {arr
+              .map((poap: any) => (
+                <Box>
+                  <Center>
+                    <Avatar name={poap.name} src={poap.image_url} size="lg" />
+                  </Center>
+                </Box>
+              ))
+              .slice(0, 11)}
+            <Box>+ {diff}</Box>
+          </>
+        ) : (
+          <>
+            {arr.map((poap: any) => (
+              <Box>
+                <Center>
+                  <Avatar name={poap.name} src={poap.image_url} size="lg" />
+                </Center>
+              </Box>
+            ))}
+          </>
+        )}
+      </SimpleGrid>
+    </Box>
+  );
+}
+
 export default function Index() {
-  const { common } = useLoaderData();
+  const { common, arrLength, arrDiff } = useLoaderData();
   return (
     <Flex direction="column">
       <Box>
@@ -50,17 +95,7 @@ export default function Index() {
           </Box>
         </Center>
       </Box>
-      <Box>
-        <Center>
-          <UnorderedList>
-            {common.map((poap: any, index: number) => (
-              <ListItem key={index}>
-                <h2>{poap}</h2>
-              </ListItem>
-            ))}
-          </UnorderedList>
-        </Center>
-      </Box>
+      <PoapContainer arr={common} length={arrLength} diff={arrDiff} />
     </Flex>
   );
 }
