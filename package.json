@@ -5,7 +5,8 @@
     "build": "remix build",
     "deploy": "fly deploy --remote-only",
     "dev": "remix dev",
-    "start": "remix-serve build"
+    "start": "remix-serve build",
+    "postinstall": "remix-esbuild-override"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.3.5",
@@ -24,9 +25,11 @@
     "graphql": "^16.6.0",
     "graphql-request": "^5.0.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "remix-esbuild-override": "^3.0.4"
   },
   "devDependencies": {
+    "@esbuild-plugins/node-globals-polyfill": "^0.1.1",
     "@remix-run/dev": "^1.7.2",
     "@remix-run/eslint-config": "^1.7.2",
     "@types/react": "^18.0.15",
