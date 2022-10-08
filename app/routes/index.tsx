@@ -2,7 +2,6 @@ import { Center, Text } from "@chakra-ui/react";
 import type { LoaderFunction } from "@remix-run/node";
 
 export const loader: LoaderFunction = async () => {
-  console.log("Ok ");
   return { message: "Hello World" };
 };
 
