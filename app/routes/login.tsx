@@ -9,7 +9,7 @@ import { commitSession, getSession } from "~/bff/session";
 import WalletConnect from "@walletconnect/client";
 import QRCodeModal from "@walletconnect/qrcode-modal";
 
-import { Center, Text, Box, Image, Button } from "@chakra-ui/react";
+import { Center, Text, Box, Image, Button, Flex } from "@chakra-ui/react";
 import { subscribeToEvents } from "~/web3/wallet-connect";
 
 export const action: ActionFunction = async ({ request }) => {
@@ -118,6 +118,13 @@ export default function Login() {
 
   return (
     <Box>
+      <Box pt={10}>
+        <Center>
+          <Box>
+            <Image src="./assets/LogoCompleto.png" />
+          </Box>
+        </Center>
+      </Box>
       <Box>
         <Center>
           <Text
@@ -126,34 +133,34 @@ export default function Login() {
             mt="30"
             color="primary"
             align="center"
-            pt={20}
+            pt={10}
             pb={5}
           >
-            The autentication <br /> for all the world
+            The autentication <Text color="#71AA43">for all the world</Text>
           </Text>
         </Center>
       </Box>
       <Box>
         <Center>
           <Box boxSize="270px" pt={20}>
-            <Image
-              src="https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F9d4db6f3-c0f4-42e1-a0f2-862776ae0c92%2Flogin-box.png?table=block&id=e9d62a02-5780-4646-9d7d-3d7b5ba464e3&spaceId=44514f37-bf45-41b8-90cd-647cbf4961f7&width=1730&userId=f6eb0ab4-bc9f-402b-b477-e57a6aa6ecc6&cache=v2"
-              alt="hola"
-            />
+            <Image src="./assets/Cuadrados.png" alt="hola" />
           </Box>
         </Center>
       </Box>
-      <Box pt={40}>
+      <Box pt={36}>
         <Center>
           <Button
             backgroundColor={"#1E7EFD"}
             width="350px"
-            height="70px"
+            height="65px"
             color="white"
             rounded={"full"}
             fontSize="23px"
             onClick={handleLoginWalletConnect}
           >
+            <Flex pr="20px" flex="">
+              <Image src="./assets/walletcon.png" />
+            </Flex>
             Wallet Connect
           </Button>
         </Center>
