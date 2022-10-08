@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { LoaderFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { comparePoaps } from "~/web3/poapVerification";
+import { comparePoaps } from "~/web3/poap";
 
 export const loader: LoaderFunction = async () => {
   let addressMain = "gutybv.eth";

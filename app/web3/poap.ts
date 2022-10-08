@@ -1,12 +1,12 @@
-async function comparePoaps(adress1: string, adress2: string) {
-  let data1 = await fetch(`https://api.poap.tech/actions/scan/${adress1}`, {
+async function comparePoaps(address1: string, address2: string) {
+  let data1 = await fetch(`https://api.poap.tech/actions/scan/${address1}`, {
     headers: {
       "Content-Type": "application/json",
     },
   });
   let res1 = await data1.json();
 
-  let data2 = await fetch(`https://api.poap.tech/actions/scan/${adress2}`, {
+  let data2 = await fetch(`https://api.poap.tech/actions/scan/${address2}`, {
     headers: {
       "Content-Type": "application/json",
     },
