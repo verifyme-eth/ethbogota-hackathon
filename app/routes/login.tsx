@@ -1,8 +1,10 @@
-import type { ActionFunction, LoaderFunction } from "@remix-run/node";
+import type { ActionFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { useSubmit } from "@remix-run/react";
 
 import { db } from "~/utils/db.server";
+
+import { commitSession, getSession } from "~/bff/session";
 
 import WalletConnect from "@walletconnect/client";
 import QRCodeModal from "@walletconnect/qrcode-modal";
@@ -11,21 +13,61 @@ import { Center, Text, Box, Image, Button } from "@chakra-ui/react";
 import { subscribeToEvents } from "~/web3/wallet-connect";
 
 export const action: ActionFunction = async ({ request }) => {
+  const session = await getSession(request.headers.get("Cookie"));
+
   const form = await request.formData();
 
   const address = form.get("address");
+  const connected = form.get("connected");
 
   if (!address || typeof address !== "string") return null;
+  if (!connected || typeof connected !== "string") return null;
 
-  return redirect(`/dashboard`);
-};
+  let user;
 
-export const loader: LoaderFunction = async () => {
-  const users = await db.user.findMany();
+  try {
+    user = await db.user.findFirst({
+      where: {
+        address: address,
+      },
+    });
 
-  console.log(users);
+    if (!user) {
+      await db.user.create({
+        data: {
+          address: address.toLowerCase(),
+          connected: connected === "true",
+        },
+      });
+    }
 
-  return null;
+    await db.user.update({
+      where: {
+        address: address,
+      },
+      data: {
+        connected: connected === "true",
+      },
+    });
+
+    console.log("[login] user:", user);
+  } catch (error) {
+    console.log("[login] User not found. Creating new user");
+
+    await db.user.create({
+      data: {
+        address,
+      },
+    });
+  }
+
+  session.set("address", address);
+
+  return redirect(`/dashboard`, {
+    headers: {
+      "Set-Cookie": await commitSession(session),
+    },
+  });
 };
 
 export default function Login() {
@@ -35,6 +77,7 @@ export default function Login() {
     console.log(
       "[browser][handleLoginWalletConnect] Waiting connection with walletConnect ..."
     );
+
     // bridge url
     const bridge = "https://bridge.walletconnect.org";
 
