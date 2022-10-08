@@ -6,7 +6,8 @@ import { GraphQLClient } from "graphql-request";
 import { GetProfile } from "~/web3/lens";
 import { comparePoaps } from "~/web3/poap";
 
-import { Box, Center, Divider, Text } from "@chakra-ui/react";
+import { Avatar, Box, Center, Divider, Flex, Text } from "@chakra-ui/react";
+import { transformToIpfsCoverImageUrl } from "~/web3/ipfs";
 
 export const loader: LoaderFunction = async ({ params }) => {
   // TODO: get the address from cookie session
@@ -31,14 +32,58 @@ export default function Profile() {
   const { userProfile, poapsComparted } = useLoaderData();
 
   return (
-    <Center>
+    <Box>
+      <Center>
+        <Flex mt="25px">
+          <Box mt="70px" mr="20px">
+            <Text
+              textAlign="center"
+              fontSize="24px"
+              fontWeight="bold"
+              color="black"
+            >
+              7
+            </Text>
+            <Text fontSize="16px" fontWeight="bold" color="#6F6F6F">
+              Followers
+            </Text>
+          </Box>
+
+          <Avatar
+            size="2xl"
+            name="Segun Adebayo"
+            src={transformToIpfsCoverImageUrl(
+              userProfile.coverPicture?.original?.url
+            )}
+          />
+
+          <Box mt="70px" ml="20px">
+            <Text
+              textAlign="center"
+              fontSize="24px"
+              fontWeight="bold"
+              color="black"
+            >
+              37
+            </Text>
+            <Text fontSize="16px" fontWeight="bold" color="#6F6F6F">
+              Following
+            </Text>
+          </Box>
+        </Flex>
+      </Center>
+
       <Box>
-        <Text fontSize="25px" fontWeight="bold" color="first">
+        <Text fontSize="30px" fontWeight="bold" color="black">
           {userProfile.name}
         </Text>
 
-        <Text fontSize="20px" fontWeight="light" color="second">
+        <Text fontSize="15px" fontWeight="light" color="#767676">
           @{userProfile.handle}
+        </Text>
+
+        <Text fontSize="12px" fontWeight="light" color="#666666">
+          {userProfile.bio}
         </Text>
 
         <Divider />
@@ -47,6 +92,6 @@ export default function Profile() {
           Poaps compartidos: {poapsComparted.length}
         </Text>
       </Box>
-    </Center>
+    </Box>
   );
 }
