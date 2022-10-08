@@ -1,3 +1,11 @@
+import type { ActionFunction, LoaderFunction } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
+
+import { db } from "~/utils/db.server";
+
+import WalletConnect from "@walletconnect/client";
+import QRCodeModal from "@walletconnect/qrcode-modal";
+
 import {
   Center,
   Text,
@@ -13,11 +21,8 @@ import {
   ModalBody,
   ModalFooter,
 } from "@chakra-ui/react";
-import { db } from "~/utils/db.server";
-import type { ActionFunction, LoaderFunction } from "@remix-run/node";
-import { redirect } from "@remix-run/node";
-import { Step, Steps, useSteps } from "chakra-ui-steps";
-import WalletConnect from "@walletconnect/client";
+import { subscribeToEvents } from "~/web3/wallet-connect";
+import { useSubmit } from "@remix-run/react";
 
 export const action: ActionFunction = async ({ request }) => {
   const form = await request.formData();
@@ -38,16 +43,7 @@ export const loader: LoaderFunction = async () => {
 };
 
 export default function Login() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const steps = [
-    { label: "Connect wallet" },
-    { label: "Sign in in Lens protocol" },
-  ];
-
-  const { nextStep, activeStep, reset } = useSteps({
-    initialStep: 0,
-  });
+  const submit = useSubmit();
 
   const handleLoginWalletConnect = async () => {
     console.log(
@@ -129,54 +125,12 @@ export default function Login() {
             color="white"
             rounded={"full"}
             fontSize="23px"
-            onClick={onOpen}
+            // onClick={onOpen}
           >
             Wallet Connect
           </Button>
         </Center>
       </Box>
-
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalBody>
-            <Box>
-              <Steps
-                labelOrientation="vertical"
-                activeStep={activeStep}
-                responsive={false}
-                size={"sm"}
-              >
-                {steps.map(({ label }) => (
-                  <Step label={label} key={label}></Step>
-                ))}
-              </Steps>
-            </Box>
-
-            <Text fontSize="26px" fontWeight="bold">
-              Connect your wallet
-            </Text>
-
-            <Text>
-              Connect with one of our available wallet providers or create a new
-              one
-            </Text>
-          </ModalBody>
-
-          <Center p="5">
-            <Button
-              backgroundColor="second"
-              color="white"
-              rounded={"full"}
-              fontSize="18px"
-              width="50%"
-              onClick={handleLoginWalletConnect}
-            >
-              Conectar wallet
-            </Button>
-          </Center>
-        </ModalContent>
-      </Modal>
     </Box>
   );
 }
