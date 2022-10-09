@@ -11,7 +11,6 @@ export default function PoapContainer({
   length,
   diff,
 }: PoapContainerProps) {
-  console.log(arr);
   return (
     <Box p="4">
       <SimpleGrid columns={4} spacing="1rem">

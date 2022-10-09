@@ -6,6 +6,11 @@ import { GraphQLClient } from "graphql-request";
 
 import { GetProfile } from "~/web3/lens";
 import { comparePoaps } from "~/web3/poap";
+import { transformToIpfsUrl } from "~/web3/ipfs";
+
+import { db } from "~/utils/db.server";
+
+import { destroySession, getSession } from "~/bff/session";
 
 import {
   Avatar,
@@ -21,16 +26,15 @@ import {
   Divider,
 } from "@chakra-ui/react";
 
-import { transformToIpfsUrl } from "~/web3/ipfs";
-import { db } from "~/utils/db.server";
 import PoapContainer from "~/components/PoapContainer";
-import { destroySession, getSession } from "~/bff/session";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
+  // Get address from cookie session
   const session = await getSession(request.headers.get("Cookie"));
 
   const address = session.get("address");
 
+  // Get profile from Lens protocol
   const lens = new GraphQLClient("https://api.lens.dev/playground");
 
   const variables = {
@@ -41,12 +45,29 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 
   const userProfile = response.profile;
 
+  // Get poaps shared
   const { common, arrLength, arrDiff } = await comparePoaps(
     address,
     userProfile.ownedBy
   );
 
-  return { userProfile, common, arrLength, arrDiff };
+  // Get if user is verified
+  const verified = await db.verified.findUnique({
+    where: {
+      address: userProfile.ownedBy.toLowerCase(),
+    },
+  });
+
+  const verifiers = JSON.parse(verified?.poaps as string);
+
+  console.log(verifiers);
+
+  let indexVm = 0;
+  for (let address in verifiers) {
+    indexVm += verifiers[address].length;
+  }
+
+  return { userProfile, common, arrLength, arrDiff, indexVm };
 };
 
 export const action: ActionFunction = async ({ request }) => {
@@ -77,7 +98,7 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 export default function Profile() {
-  const { userProfile, common, arrLength, arrDiff } = useLoaderData();
+  const { userProfile, common, arrLength, arrDiff, indexVm } = useLoaderData();
 
   const submit = useSubmit();
 
@@ -142,7 +163,7 @@ export default function Profile() {
 
             <Box position="relative" display="inline-flex">
               <CircularProgress
-                value={80}
+                value={indexVm}
                 size="150px"
                 color="#71AA43"
                 thickness="8px"
@@ -240,7 +261,7 @@ export default function Profile() {
         borderBottomRightRadius="30"
         mt="3"
       >
-        {false ? (
+        {userProfile.verified ? (
           <HStack>
             <Box width="50%" m="auto" pt="4">
               <Text fontSize="20px" fontWeight="bold" color="#7E7E7E">

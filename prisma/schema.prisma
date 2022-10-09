@@ -21,4 +21,5 @@ model User {
 model Verified {
   address String @id
   indexVM Int @default(0)
+  poaps String @default("{ }")
 }
