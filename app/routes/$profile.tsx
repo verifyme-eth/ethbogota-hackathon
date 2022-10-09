@@ -118,8 +118,6 @@ export const action: ActionFunction = async ({ request }) => {
 
       verifiers[address] = poaps;
 
-      console.log(verifiers);
-
       await db.verified.update({
         where: {
           address: profileAddress.toLowerCase(),
@@ -142,7 +140,10 @@ export const action: ActionFunction = async ({ request }) => {
     }
   }
 
-  return redirect(request.url);
+  //remove the last / from string
+  const url = request.url.slice(0, -1);
+
+  return redirect(url);
 };
 
 export default function Profile() {
