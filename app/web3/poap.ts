@@ -59,11 +59,15 @@ async function comparePoaps(address1: string, address2: string) {
     }
   }
 
-  console.log(common);
+  let arrLength = 0;
+  let arrDiff = 0;
 
-  return common;
+  if (common.length > 11) {
+    arrLength = common.length;
+    arrDiff = common.length - 11;
+  }
+
+  return { common, arrLength, arrDiff };
 }
-
-comparePoaps("nate-d3v.eth", "cristianvaldivia.eth");
 
 export { comparePoaps };
