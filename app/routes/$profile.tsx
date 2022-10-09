@@ -1,6 +1,11 @@
 import type { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
 import { redirect } from "@remix-run/server-runtime";
-import { useLoaderData, useSubmit, useTransition } from "@remix-run/react";
+import {
+  Link,
+  useLoaderData,
+  useSubmit,
+  useTransition,
+} from "@remix-run/react";
 
 import { GraphQLClient } from "graphql-request";
 
@@ -24,6 +29,7 @@ import {
   HStack,
   Divider,
   Icon,
+  Image,
 } from "@chakra-ui/react";
 
 import PoapContainer from "~/components/PoapContainer";
@@ -181,182 +187,211 @@ export default function Profile() {
     });
   };
 
-  const handleLogout = () => {
-    const formData = new FormData();
-
-    formData.append("address", "0x3aec2276326cdc8e9a8a4351c338166e67105ac3");
-    formData.append("connected", "false");
-    formData.append("intent", "logout");
-
-    submit(formData, {
-      action: "/dashboard/?index",
-      method: "post",
-      encType: "application/x-www-form-urlencoded",
-      replace: true,
-    });
-  };
-
   return (
     <Box pt="20px">
-      <Box
-        backgroundColor="#FEE7B9"
-        borderTopLeftRadius="30"
-        borderTopRightRadius="30"
-      >
-        <Center mt="60px">
-          <Flex mt="-60px">
-            <Box mt="70px" mr="20px">
-              <Text
-                textAlign="center"
-                fontSize="24px"
-                fontWeight="bold"
-                color="black"
-              >
-                {userProfile.stats.totalFollowers}
-              </Text>
-              <Text fontSize="16px" fontWeight="bold" color="#6F6F6F">
-                Followers
-              </Text>
-            </Box>
-
-            <Box position="relative" display="inline-flex">
-              {!transition.submission && (
-                <CircularProgress
-                  value={indexVm}
-                  size="150px"
-                  color="#71AA43"
-                  thickness="8px"
-                />
-              )}
-
-              {transition.submission && (
-                <CircularProgress
-                  value={indexVm + arrLength}
-                  size="150px"
-                  color="#71AA43"
-                  thickness="8px"
-                />
-              )}
-
-              <Box
-                top={0}
-                left={0}
-                bottom={0}
-                right={0}
-                position="absolute"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-              >
-                {userProfile.picture ? (
-                  <Avatar
-                    size="xl"
-                    src={transformToIpfsUrl(userProfile.picture?.original?.url)}
-                  />
-                ) : (
-                  <Avatar
-                    size="xl"
-                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT29B69wuAtANWIv19S-HrkYOGdUqbwnVpcTDjCoovLPA&s"
-                  />
-                )}
-              </Box>
-            </Box>
-            <Box mt="70px" ml="20px">
-              <Text
-                textAlign="center"
-                fontSize="24px"
-                fontWeight="bold"
-                color="black"
-              >
-                {userProfile.stats.totalFollowing}
-              </Text>
-              <Text fontSize="16px" fontWeight="bold" color="#6F6F6F">
-                Following
-              </Text>
-            </Box>
-          </Flex>
-        </Center>
-
-        <Box mt="20px">
-          <Text
-            textAlign="center"
-            fontSize="30px"
-            fontWeight="bold"
-            color="black"
-          >
-            {userProfile.name}
-          </Text>
-
-          <Text
-            textAlign="center"
-            fontSize="15px"
-            fontWeight="light"
-            color="#767676"
-            pb="2"
-          >
-            @{userProfile.handle}
-          </Text>
+      <Link to={"/dashboard"}>
+        <Box left="0" position="fixed" height="50px" width="40px">
+          <Icon fontSize="4xl" color="lensDark" as={BiLogOutCircle} />
         </Box>
-      </Box>
+      </Link>
 
-      <Divider borderWidth={2} />
-
-      <HStack pl="45px">
-        <Text fontSize="16px" fontWeight="light" color="#666666">
-          Shared Poaps
-        </Text>
-
-        <Img
-          src="https://www.niftytable.com/content/images/2021/09/v2-jzTZE9PtJ8Mmvqe_qnjc4DMzhJmNtBkdALWAtyjc.jpg "
-          width="20%"
-          height="20%"
-        />
-      </HStack>
-
-      <PoapContainer arr={common} length={arrLength} diff={arrDiff} />
-
-      <Box
-        backgroundColor="#FEE7B9"
-        borderBottomLeftRadius="30"
-        borderBottomRightRadius="30"
-        mt="3"
-      >
-        {!transition.submission && (
-          <>
-            {!verifiedForUser ? (
-              <HStack>
-                <Box width="50%" m="auto" pt="4">
-                  <Text fontSize="20px" fontWeight="bold" color="#7E7E7E">
-                    {userProfile.name}
-                  </Text>
-
-                  <Text fontSize="12px" fontWeight="bold" color="#7E7E7E" p="1">
-                    needs your verification
-                  </Text>
-
-                  <Button
-                    bg="white"
-                    boxShadow="0px 2px 3px rgba(0, 0, 0, 0.15)"
-                    borderRadius="70px"
-                    width="100px"
-                    mb="2"
-                    onClick={handleVerify}
+      {transition.state === "idle" && (
+        <>
+          <Box
+            backgroundColor="#FEE7B9"
+            borderTopLeftRadius="30"
+            borderTopRightRadius="30"
+          >
+            <Center mt="60px">
+              <Flex mt="-60px">
+                <Box mt="70px" mr="20px">
+                  <Text
+                    textAlign="center"
+                    fontSize="24px"
+                    fontWeight="bold"
+                    color="black"
                   >
-                    <Text fontSize="12px" fontWeight="extrabold" color="#black">
-                      Verify
-                    </Text>
-                  </Button>
+                    {userProfile.stats.totalFollowers}
+                  </Text>
+                  <Text fontSize="16px" fontWeight="bold" color="#6F6F6F">
+                    Followers
+                  </Text>
                 </Box>
 
-                <Center>
-                  <Img
-                    src="./assets/notverified.png"
-                    width="50%"
-                    height="50%"
-                  />
-                </Center>
-              </HStack>
-            ) : (
+                <Box position="relative" display="inline-flex">
+                  {!transition.submission && (
+                    <CircularProgress
+                      value={indexVm}
+                      size="150px"
+                      color="#71AA43"
+                      thickness="8px"
+                    />
+                  )}
+
+                  {transition.submission && (
+                    <CircularProgress
+                      value={indexVm + arrLength}
+                      size="150px"
+                      color="#71AA43"
+                      thickness="8px"
+                    />
+                  )}
+
+                  <Box
+                    top={0}
+                    left={0}
+                    bottom={0}
+                    right={0}
+                    position="absolute"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    {userProfile.picture ? (
+                      <Avatar
+                        size="xl"
+                        src={transformToIpfsUrl(
+                          userProfile.picture?.original?.url
+                        )}
+                      />
+                    ) : (
+                      <Avatar
+                        size="xl"
+                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT29B69wuAtANWIv19S-HrkYOGdUqbwnVpcTDjCoovLPA&s"
+                      />
+                    )}
+                  </Box>
+                </Box>
+                <Box mt="70px" ml="20px">
+                  <Text
+                    textAlign="center"
+                    fontSize="24px"
+                    fontWeight="bold"
+                    color="black"
+                  >
+                    {userProfile.stats.totalFollowing}
+                  </Text>
+                  <Text fontSize="16px" fontWeight="bold" color="#6F6F6F">
+                    Following
+                  </Text>
+                </Box>
+              </Flex>
+            </Center>
+
+            <Box mt="20px">
+              <Text
+                textAlign="center"
+                fontSize="30px"
+                fontWeight="bold"
+                color="black"
+              >
+                {userProfile.name}
+              </Text>
+
+              <Text
+                textAlign="center"
+                fontSize="15px"
+                fontWeight="light"
+                color="#767676"
+                pb="2"
+              >
+                @{userProfile.handle}
+              </Text>
+            </Box>
+          </Box>
+
+          <Divider borderWidth={2} />
+
+          <HStack pl="45px">
+            <Text fontSize="16px" fontWeight="light" color="#666666">
+              Shared Poaps
+            </Text>
+
+            <Img
+              src="https://www.niftytable.com/content/images/2021/09/v2-jzTZE9PtJ8Mmvqe_qnjc4DMzhJmNtBkdALWAtyjc.jpg "
+              width="20%"
+              height="20%"
+            />
+          </HStack>
+
+          <PoapContainer arr={common} length={arrLength} diff={arrDiff} />
+
+          <Box
+            backgroundColor="#FEE7B9"
+            borderBottomLeftRadius="30"
+            borderBottomRightRadius="30"
+            mt="3"
+          >
+            {!transition.submission && (
+              <>
+                {!verifiedForUser ? (
+                  <HStack>
+                    <Box width="50%" m="auto" pt="4">
+                      <Text fontSize="20px" fontWeight="bold" color="#7E7E7E">
+                        {userProfile.name}
+                      </Text>
+
+                      <Text
+                        fontSize="12px"
+                        fontWeight="bold"
+                        color="#7E7E7E"
+                        p="1"
+                      >
+                        needs your verification
+                      </Text>
+
+                      <Button
+                        bg="white"
+                        boxShadow="0px 2px 3px rgba(0, 0, 0, 0.15)"
+                        borderRadius="70px"
+                        width="100px"
+                        mb="2"
+                        onClick={handleVerify}
+                      >
+                        <Text
+                          fontSize="12px"
+                          fontWeight="extrabold"
+                          color="#black"
+                        >
+                          Verify
+                        </Text>
+                      </Button>
+                    </Box>
+
+                    <Center>
+                      <Img
+                        src="./assets/notverified.png"
+                        width="50%"
+                        height="50%"
+                      />
+                    </Center>
+                  </HStack>
+                ) : (
+                  <HStack>
+                    <Box width="80%">
+                      <Text
+                        fontSize="20px"
+                        fontWeight="bold"
+                        color="#7E7E7E"
+                        p="3"
+                      >
+                        You have verified {userProfile.name}
+                      </Text>
+                    </Box>
+
+                    <Center>
+                      <Img
+                        src="./assets/verified.png"
+                        width="50%"
+                        height="50%"
+                      />
+                    </Center>
+                  </HStack>
+                )}
+              </>
+            )}
+
+            {transition.submission && (
               <HStack>
                 <Box width="80%">
                   <Text fontSize="20px" fontWeight="bold" color="#7E7E7E" p="3">
@@ -369,36 +404,23 @@ export default function Profile() {
                 </Center>
               </HStack>
             )}
-          </>
-        )}
+          </Box>
+        </>
+      )}
 
-        {transition.submission && (
-          <HStack>
-            <Box width="80%">
-              <Text fontSize="20px" fontWeight="bold" color="#7E7E7E" p="3">
-                You have verified {userProfile.name}
-              </Text>
+      {transition.state === "loading" && (
+        <Box>
+          <Text textAlign="center" fontSize="26px" color="lensDark" mt="25px">
+            Connecting with garden
+          </Text>
+
+          <Center>
+            <Box mt="20px">
+              <Image src="./assets/lens-loading.gif" rounded="2xl" />
             </Box>
-
-            <Center>
-              <Img src="./assets/verified.png" width="50%" height="50%" />
-            </Center>
-          </HStack>
-        )}
-      </Box>
-
-      <Box
-        bg="third"
-        roundedTopLeft="5px"
-        bottom="0"
-        right="0"
-        position="fixed"
-        height="50px"
-        width="40px"
-        onClick={handleLogout}
-      >
-        <Icon fontSize="4xl" color="lensDark" as={BiLogOutCircle} />
-      </Box>
+          </Center>
+        </Box>
+      )}
     </Box>
   );
 }

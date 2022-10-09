@@ -1,6 +1,11 @@
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import { Link, useLoaderData, useSubmit } from "@remix-run/react";
+import {
+  Link,
+  useLoaderData,
+  useSubmit,
+  useTransition,
+} from "@remix-run/react";
 
 import { GraphQLClient } from "graphql-request";
 
@@ -113,6 +118,7 @@ export const action: ActionFunction = async ({ request }) => {
 
 export default function Dashboard() {
   const submit = useSubmit();
+  const transition = useTransition();
 
   const { address, recentsPosts, profile, indexVm } = useLoaderData();
 
@@ -148,8 +154,6 @@ export default function Dashboard() {
   const [value, setValue] = React.useState("");
   const handleChange = (event: any) => setValue(event.target.value);
 
-  console.log(recentsPosts);
-
   return (
     <Box>
       <Box pt={10}>
@@ -160,185 +164,208 @@ export default function Dashboard() {
         </Center>
       </Box>
 
-      <Box mt="-80px">
-        <HStack>
-          <Box px={20} backgroundColor="#FEDFA2">
-            <Text
-              textAlign="center"
-              fontSize="20px"
-              fontWeight="bold"
-              color="black"
-            >
-              {profile?.name}
-            </Text>
-            <Text
-              textAlign="center"
-              fontSize="15px"
-              fontWeight="600"
-              color="#767676"
-            >
-              @{profile?.handle}
-            </Text>
+      {transition.state === "idle" && (
+        <>
+          <Box mt="-80px">
+            <HStack>
+              <Box px={20} backgroundColor="#FEDFA2">
+                <Text
+                  textAlign="center"
+                  fontSize="20px"
+                  fontWeight="bold"
+                  color="black"
+                >
+                  {profile?.name}
+                </Text>
+                <Text
+                  textAlign="center"
+                  fontSize="15px"
+                  fontWeight="600"
+                  color="#767676"
+                >
+                  @{profile?.handle}
+                </Text>
+              </Box>
+
+              <Box>
+                <Box position="relative" display="inline-flex" ml="-60px">
+                  <CircularProgress
+                    value={getRatioValidation(
+                      indexVm,
+                      profile.stats.totalFollowers
+                    )}
+                    size="150px"
+                    color="#71AA43"
+                    thickness="8px"
+                  />
+                  <Box
+                    top={0}
+                    left={0}
+                    bottom={0}
+                    right={0}
+                    position="absolute"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    {profile.picture ? (
+                      <Avatar
+                        size="xl"
+                        src={transformToIpfsUrl(profile.picture?.original?.url)}
+                      />
+                    ) : (
+                      <Avatar
+                        size="xl"
+                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT29B69wuAtANWIv19S-HrkYOGdUqbwnVpcTDjCoovLPA&s"
+                      />
+                    )}
+                  </Box>
+                </Box>
+              </Box>
+            </HStack>
           </Box>
 
           <Box>
-            <Box position="relative" display="inline-flex" ml="-60px">
-              <CircularProgress
-                value={getRatioValidation(
-                  indexVm,
-                  profile.stats.totalFollowers
-                )}
-                size="150px"
-                color="#71AA43"
-                thickness="8px"
-              />
-              <Box
-                top={0}
-                left={0}
-                bottom={0}
-                right={0}
-                position="absolute"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-              >
-                {profile.picture ? (
-                  <Avatar
-                    size="xl"
-                    src={transformToIpfsUrl(profile.picture?.original?.url)}
-                  />
-                ) : (
-                  <Avatar
-                    size="xl"
-                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT29B69wuAtANWIv19S-HrkYOGdUqbwnVpcTDjCoovLPA&s"
-                  />
-                )}
-              </Box>
-            </Box>
-          </Box>
-        </HStack>
-      </Box>
-
-      <Box>
-        <Flex mt="-60px">
-          <Box mt="20px" mr="30px" ml="20px">
-            <Text
-              textAlign="center"
-              fontSize="24px"
-              fontWeight="bold"
-              color="black"
-            >
-              {profile?.stats.totalFollowers}
-            </Text>
-            <Text fontSize="16px" fontWeight="bold" color="#6F6F6F">
-              Followers
-            </Text>
-          </Box>
-
-          <Box mt="20px" pl="10px">
-            <Text
-              textAlign="center"
-              fontSize="24px"
-              fontWeight="bold"
-              color="black"
-            >
-              {profile?.stats.totalFollowing}
-            </Text>
-            <Text fontSize="16px" fontWeight="bold" color="#6F6F6F">
-              Following
-            </Text>
-          </Box>
-        </Flex>
-      </Box>
-
-      <Box mt="20px" ml="15px" mb="18px" mr="15px">
-        <HStack>
-          <Box width="330px">
-            <Input
-              value={value}
-              onChange={handleChange}
-              placeholder="Find your friends"
-              borderRadius={20}
-              backgroundColor="#E3E3E4"
-            />
-          </Box>
-
-          <Button onClick={handleSearch}>
-            <Icon fontSize="4xl" color="green.800" as={AiOutlineSearch} />
-          </Button>
-        </HStack>
-      </Box>
-
-      {recentsPosts.items.map((post: any) => (
-        <Box key={post.id}>
-          <Divider borderWidth={1} />
-
-          <Box ml="20px" mt="20px">
-            <HStack>
-              <Link to={`/${post.profile?.handle}`}>
-                <Box>
-                  {post.profile.picture?.original?.url ? (
-                    <Avatar
-                      size="md"
-                      src={transformToIpfsUrl(
-                        post.profile?.picture?.original?.url
-                      )}
-                    />
-                  ) : (
-                    <Avatar
-                      size="md"
-                      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT29B69wuAtANWIv19S-HrkYOGdUqbwnVpcTDjCoovLPA&s"
-                    />
-                  )}
-                </Box>
-              </Link>
-
-              <Link to={`/${post.profile?.handle}`} prefetch="intent">
-                <Stack>
-                  <Text>{post.profile.name}</Text>
-                  <Text color="green" fontSize="sm">
-                    @{post.profile.handle}
-                  </Text>
-                </Stack>
-              </Link>
-
-              <Box>
-                <Text ml="130px" color="gray" mb="30px" fontSize="sm">
-                  {calculateHoursBetweenNowAndDate(post?.createdAt)} h
+            <Flex mt="-60px">
+              <Box mt="20px" mr="30px" ml="20px">
+                <Text
+                  textAlign="center"
+                  fontSize="24px"
+                  fontWeight="bold"
+                  color="black"
+                >
+                  {profile?.stats.totalFollowers}
+                </Text>
+                <Text fontSize="16px" fontWeight="bold" color="#6F6F6F">
+                  Followers
                 </Text>
               </Box>
-            </HStack>
 
-            <Box ml="60px" mt="10px">
+              <Box mt="20px" pl="10px">
+                <Text
+                  textAlign="center"
+                  fontSize="24px"
+                  fontWeight="bold"
+                  color="black"
+                >
+                  {profile?.stats.totalFollowing}
+                </Text>
+                <Text fontSize="16px" fontWeight="bold" color="#6F6F6F">
+                  Following
+                </Text>
+              </Box>
+            </Flex>
+          </Box>
+
+          <Box mt="20px" ml="15px" mb="18px" mr="15px">
+            <HStack>
+              <Box width="330px">
+                <Input
+                  value={value}
+                  onChange={handleChange}
+                  placeholder="Find your friends"
+                  borderRadius={20}
+                  backgroundColor="#E3E3E4"
+                />
+              </Box>
+
+              <Button onClick={handleSearch}>
+                <Icon fontSize="4xl" color="green.800" as={AiOutlineSearch} />
+              </Button>
+            </HStack>
+          </Box>
+
+          {recentsPosts.items.map((post: any) => (
+            <Box key={post.id}>
+              <Divider borderWidth={1} />
+
+              <Box ml="20px" mt="20px">
+                <HStack>
+                  <Link to={`/${post.profile?.handle}`}>
+                    <Box>
+                      {post.profile.picture?.original?.url ? (
+                        <Avatar
+                          size="md"
+                          src={transformToIpfsUrl(
+                            post.profile?.picture?.original?.url
+                          )}
+                        />
+                      ) : (
+                        <Avatar
+                          size="md"
+                          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT29B69wuAtANWIv19S-HrkYOGdUqbwnVpcTDjCoovLPA&s"
+                        />
+                      )}
+                    </Box>
+                  </Link>
+
+                  <Link to={`/${post.profile?.handle}`} prefetch="intent">
+                    <Stack>
+                      <Text>{post.profile.name}</Text>
+                      <Text color="green" fontSize="sm">
+                        @{post.profile.handle}
+                      </Text>
+                    </Stack>
+                  </Link>
+
+                  <Box>
+                    <Text ml="130px" color="gray" mb="30px" fontSize="sm">
+                      {calculateHoursBetweenNowAndDate(post?.createdAt)} h
+                    </Text>
+                  </Box>
+                </HStack>
+
+                <Box ml="60px" mt="10px">
+                  <Text
+                    pr="10"
+                    pb="10"
+                    textAlign="justify"
+                    fontSize="16px"
+                    color="#7E7E7E"
+                  >
+                    {resume(post?.metadata?.content)}
+                  </Text>
+                </Box>
+              </Box>
+            </Box>
+          ))}
+
+          <Center onClick={handleLogout}>
+            <Box
+              bg="third"
+              roundedTop="30px"
+              bottom="0"
+              position="fixed"
+              width="90%"
+              height="50px"
+              my="auto"
+            >
               <Text
-                pr="10"
-                pb="10"
-                textAlign="justify"
-                fontSize="16px"
-                color="#7E7E7E"
+                textAlign="center"
+                fontSize="20px"
+                fontWeight="bold"
+                pt="8px"
               >
-                {resume(post?.metadata?.content)}
+                Logout
               </Text>
             </Box>
-          </Box>
-        </Box>
-      ))}
+          </Center>
+        </>
+      )}
 
-      <Center onClick={handleLogout}>
-        <Box
-          bg="third"
-          roundedTop="30px"
-          bottom="0"
-          position="fixed"
-          width="90%"
-          height="50px"
-          my="auto"
-        >
-          <Text textAlign="center" fontSize="20px" fontWeight="bold" pt="8px">
-            Logout
+      {transition.state === "loading" && (
+        <Box mt="-80px">
+          <Text textAlign="center" fontSize="26px" color="lensDark" mt="25px">
+            Connecting with garden
           </Text>
+
+          <Center>
+            <Box mt="20px">
+              <Image src="./assets/lens-loading.gif" rounded="2xl" />
+            </Box>
+          </Center>
         </Box>
-      </Center>
+      )}
     </Box>
   );
 }
