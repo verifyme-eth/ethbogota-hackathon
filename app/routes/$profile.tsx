@@ -15,6 +15,8 @@ import {
   Divider,
   Flex,
   Text,
+  Image,
+  CircularProgress,
 } from "@chakra-ui/react";
 import { transformToIpfsCoverImageUrl } from "~/web3/ipfs";
 import { db } from "~/utils/db.server";
@@ -92,89 +94,115 @@ export default function Profile() {
 
   return (
     <Box>
-      <Center>
-        <Flex mt="25px">
-          <Box mt="70px" mr="20px">
-            <Text
-              textAlign="center"
-              fontSize="24px"
-              fontWeight="bold"
-              color="black"
-            >
-              7
-            </Text>
-            <Text fontSize="16px" fontWeight="bold" color="#6F6F6F">
-              Followers
-            </Text>
+      <Box pt={10}>
+        <Center>
+          <Box boxSize="140px">
+            <Image src="./assets/LogoCompleto.png" />
           </Box>
-
-          <Avatar
-            size="2xl"
-            name="Segun Adebayo"
-            src={transformToIpfsCoverImageUrl(
-              userProfile.coverPicture?.original?.url
-            )}
-          />
-
-          <Box mt="70px" ml="20px">
-            <Text
-              textAlign="center"
-              fontSize="24px"
-              fontWeight="bold"
-              color="black"
-            >
-              37
-            </Text>
-            <Text fontSize="16px" fontWeight="bold" color="#6F6F6F">
-              Following
-            </Text>
-          </Box>
-        </Flex>
-      </Center>
-
-      <Box mt="20px">
-        <Text
-          textAlign="center"
-          fontSize="30px"
-          fontWeight="bold"
-          color="black"
-        >
-          {userProfile.name}
-        </Text>
-
-        <Text
-          textAlign="center"
-          fontSize="15px"
-          fontWeight="light"
-          color="#767676"
-        >
-          @{userProfile.handle}
-        </Text>
-
-        <Text
-          textAlign="center"
-          fontSize="12px"
-          fontWeight="light"
-          color="#666666"
-          p="6px"
-        >
-          {userProfile.bio}
-        </Text>
-
-        <Center mt="20px">
-          <Divider w="80%" />
+        </Center>
+      </Box>
+      <Box
+        backgroundColor="#FEE7B9"
+        borderTopLeftRadius="30"
+        borderTopRightRadius="30"
+      >
+        <Center>
+          <Flex mt="-10px">
+            <Box mt="70px" mr="20px">
+              <Text
+                textAlign="center"
+                fontSize="24px"
+                fontWeight="bold"
+                color="black"
+              >
+                7
+              </Text>
+              <Text fontSize="16px" fontWeight="bold" color="#6F6F6F">
+                Followers
+              </Text>
+            </Box>
+            <Box position="relative" display="inline-flex">
+              <CircularProgress
+                value={80}
+                size="150px"
+                color="#71AA43"
+                thickness="8px"
+              />
+              <Box
+                top={0}
+                left={0}
+                bottom={0}
+                right={0}
+                position="absolute"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Avatar
+                  size="xl"
+                  name="Segun Adebayo"
+                  src={transformToIpfsCoverImageUrl(
+                    userProfile.coverPicture?.original?.url
+                  )}
+                />
+              </Box>
+            </Box>
+            <Box mt="70px" ml="20px">
+              <Text
+                textAlign="center"
+                fontSize="24px"
+                fontWeight="bold"
+                color="black"
+              >
+                37
+              </Text>
+              <Text fontSize="16px" fontWeight="bold" color="#6F6F6F">
+                Following
+              </Text>
+            </Box>
+          </Flex>
         </Center>
 
-        <Text
-          textAlign="center"
-          fontSize="20px"
-          fontWeight="light"
-          color="second"
-          mt="20px"
-        >
-          Poaps compartidos: {poapsComparted.length}
-        </Text>
+        <Box mt="20px">
+          <Text
+            textAlign="center"
+            fontSize="30px"
+            fontWeight="bold"
+            color="black"
+          >
+            {userProfile.name}
+          </Text>
+
+          <Text
+            textAlign="center"
+            fontSize="15px"
+            fontWeight="light"
+            color="#767676"
+          >
+            @{userProfile.handle}
+          </Text>
+
+          <Text
+            textAlign="center"
+            fontSize="12px"
+            fontWeight="light"
+            color="#666666"
+            p="6px"
+          >
+            {userProfile.bio}
+          </Text>
+        </Box>
       </Box>
+
+      <Text
+        textAlign="center"
+        fontSize="20px"
+        fontWeight="light"
+        color="second"
+        mt="20px"
+      >
+        Poaps compartidos: {poapsComparted.length}
+      </Text>
 
       <Center mt="20px">
         <Button
