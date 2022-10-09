@@ -226,12 +226,24 @@ export default function Profile() {
             </Box>
 
             <Box position="relative" display="inline-flex">
-              <CircularProgress
-                value={indexVm}
-                size="150px"
-                color="#71AA43"
-                thickness="8px"
-              />
+              {!transition.submission && (
+                <CircularProgress
+                  value={indexVm}
+                  size="150px"
+                  color="#71AA43"
+                  thickness="8px"
+                />
+              )}
+
+              {transition.submission && (
+                <CircularProgress
+                  value={indexVm + arrLength}
+                  size="150px"
+                  color="#71AA43"
+                  thickness="8px"
+                />
+              )}
+
               <Box
                 top={0}
                 left={0}
