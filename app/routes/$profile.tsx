@@ -10,7 +10,7 @@ import { transformToIpfsUrl } from "~/web3/ipfs";
 
 import { db } from "~/utils/db.server";
 
-import { destroySession, getSession } from "~/bff/session";
+import { getSession } from "~/bff/session";
 
 import {
   Avatar,

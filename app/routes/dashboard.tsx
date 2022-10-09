@@ -4,7 +4,7 @@ import { useLoaderData, useSubmit } from "@remix-run/react";
 
 import { GraphQLClient } from "graphql-request";
 
-import { ExplorePublications } from "~/web3/lens";
+import { ExplorePublications, GetDefaultProfile } from "~/web3/lens";
 
 import { db } from "~/utils/db.server";
 import { destroySession, getSession } from "~/bff/session";
@@ -30,19 +30,30 @@ import { AiOutlineSearch } from "react-icons/ai";
 import React from "react";
 
 export const loader: LoaderFunction = async ({ request }) => {
+  // Get address from cookie session
   const session = await getSession(request.headers.get("Cookie"));
 
   const address = session.get("address");
 
+  // Get feed from Lens protocol
   const lens = new GraphQLClient("https://api.lens.dev/playground");
 
   console.log("[dashboard/friends] Fetching feed from Lens API ...");
 
-  const response = await lens.request(ExplorePublications);
+  const responsePublications = await lens.request(ExplorePublications);
 
-  const recentsPosts = response.explorePublications;
+  const recentsPosts = responsePublications.explorePublications;
 
-  return { recentsPosts, address };
+  // Get default profile from Lens
+  const variables: any = {
+    request: { ethereumAddress: address },
+  };
+
+  const responseProfile = await lens.request(GetDefaultProfile, variables);
+
+  const profile = responseProfile.defaultProfile;
+
+  return { recentsPosts, address, profile };
 };
 
 export const action: ActionFunction = async ({ request }) => {
@@ -81,9 +92,9 @@ export const action: ActionFunction = async ({ request }) => {
 export default function Dashboard() {
   const submit = useSubmit();
 
-  const { address, recentsPosts } = useLoaderData();
+  const { address, recentsPosts, profile } = useLoaderData();
 
-  // console.log(recentsPosts);
+  console.log(profile);
 
   const handleLogout = () => {
     const formData = new FormData();
@@ -136,11 +147,11 @@ export default function Dashboard() {
           <Box px={20} backgroundColor="#FEDFA2">
             <Text
               textAlign="center"
-              fontSize="30px"
+              fontSize="20px"
               fontWeight="bold"
               color="black"
             >
-              Flourish
+              {profile?.name}
             </Text>
             <Text
               textAlign="center"
@@ -148,7 +159,7 @@ export default function Dashboard() {
               fontWeight="600"
               color="#767676"
             >
-              @Flourish.lens
+              @{profile?.handle}
             </Text>
           </Box>
 
@@ -189,7 +200,7 @@ export default function Dashboard() {
               fontWeight="bold"
               color="black"
             >
-              7
+              {profile?.stats.totalFollowers}
             </Text>
             <Text fontSize="16px" fontWeight="bold" color="#6F6F6F">
               Followers
@@ -203,7 +214,7 @@ export default function Dashboard() {
               fontWeight="bold"
               color="black"
             >
-              37
+              {profile?.stats.totalFollowing}
             </Text>
             <Text fontSize="16px" fontWeight="bold" color="#6F6F6F">
               Following
