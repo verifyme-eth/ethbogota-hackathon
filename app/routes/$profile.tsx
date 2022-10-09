@@ -1,6 +1,6 @@
 import type { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
 import { redirect } from "@remix-run/server-runtime";
-import { useLoaderData, useSubmit } from "@remix-run/react";
+import { useLoaderData, useSubmit, useTransition } from "@remix-run/react";
 
 import { GraphQLClient } from "graphql-request";
 
@@ -159,6 +159,8 @@ export default function Profile() {
 
   const submit = useSubmit();
 
+  const transition = useTransition();
+
   const handleVerify = async () => {
     const formData = new FormData();
 
@@ -291,16 +293,6 @@ export default function Profile() {
         </Box>
       </Box>
 
-      {/* <Text
-        textAlign="center"
-        fontSize="12px"
-        fontWeight="light"
-        color="#666666"
-        p="6px"
-      >
-        {userProfile.bio}
-      </Text> */}
-
       <Divider borderWidth={2} />
 
       <HStack pl="45px">
@@ -323,36 +315,58 @@ export default function Profile() {
         borderBottomRightRadius="30"
         mt="3"
       >
-        {!verifiedForUser ? (
-          <HStack>
-            <Box width="50%" m="auto" pt="4">
-              <Text fontSize="20px" fontWeight="bold" color="#7E7E7E">
-                {userProfile.name}
-              </Text>
+        {!transition.submission && (
+          <>
+            {!verifiedForUser ? (
+              <HStack>
+                <Box width="50%" m="auto" pt="4">
+                  <Text fontSize="20px" fontWeight="bold" color="#7E7E7E">
+                    {userProfile.name}
+                  </Text>
 
-              <Text fontSize="12px" fontWeight="bold" color="#7E7E7E" p="1">
-                needs your verification
-              </Text>
+                  <Text fontSize="12px" fontWeight="bold" color="#7E7E7E" p="1">
+                    needs your verification
+                  </Text>
 
-              <Button
-                bg="white"
-                boxShadow="0px 2px 3px rgba(0, 0, 0, 0.15)"
-                borderRadius="70px"
-                width="100px"
-                mb="2"
-                onClick={handleVerify}
-              >
-                <Text fontSize="12px" fontWeight="extrabold" color="#black">
-                  Verify
-                </Text>
-              </Button>
-            </Box>
+                  <Button
+                    bg="white"
+                    boxShadow="0px 2px 3px rgba(0, 0, 0, 0.15)"
+                    borderRadius="70px"
+                    width="100px"
+                    mb="2"
+                    onClick={handleVerify}
+                  >
+                    <Text fontSize="12px" fontWeight="extrabold" color="#black">
+                      Verify
+                    </Text>
+                  </Button>
+                </Box>
 
-            <Center>
-              <Img src="./assets/notverified.png" width="50%" height="50%" />
-            </Center>
-          </HStack>
-        ) : (
+                <Center>
+                  <Img
+                    src="./assets/notverified.png"
+                    width="50%"
+                    height="50%"
+                  />
+                </Center>
+              </HStack>
+            ) : (
+              <HStack>
+                <Box width="80%">
+                  <Text fontSize="20px" fontWeight="bold" color="#7E7E7E" p="3">
+                    You have verified {userProfile.name}
+                  </Text>
+                </Box>
+
+                <Center>
+                  <Img src="./assets/verified.png" width="50%" height="50%" />
+                </Center>
+              </HStack>
+            )}
+          </>
+        )}
+
+        {transition.submission && (
           <HStack>
             <Box width="80%">
               <Text fontSize="20px" fontWeight="bold" color="#7E7E7E" p="3">
