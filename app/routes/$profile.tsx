@@ -17,6 +17,8 @@ import {
   Image,
   CircularProgress,
   Img,
+  HStack,
+  Divider,
 } from "@chakra-ui/react";
 
 import { transformToIpfsUrl } from "~/web3/ipfs";
@@ -199,24 +201,27 @@ export default function Profile() {
             fontSize="15px"
             fontWeight="light"
             color="#767676"
+            pb="2"
           >
             @{userProfile.handle}
-          </Text>
-
-          <Text
-            textAlign="center"
-            fontSize="12px"
-            fontWeight="light"
-            color="#666666"
-            p="6px"
-          >
-            {userProfile.bio}
           </Text>
         </Box>
       </Box>
 
-      <Flex>
-        <Text fontSize="16px" fontWeight="light" color="#666666" m="auto">
+      {/* <Text
+        textAlign="center"
+        fontSize="12px"
+        fontWeight="light"
+        color="#666666"
+        p="6px"
+      >
+        {userProfile.bio}
+      </Text> */}
+
+      <Divider borderWidth={2} />
+
+      <HStack pl="45px">
+        <Text fontSize="16px" fontWeight="light" color="#666666">
           Shared Poaps
         </Text>
 
@@ -225,9 +230,44 @@ export default function Profile() {
           width="20%"
           height="20%"
         />
-      </Flex>
+      </HStack>
 
       <PoapContainer arr={common} length={arrLength} diff={arrDiff} />
+
+      <Box
+        backgroundColor="#FEE7B9"
+        borderBottomLeftRadius="30"
+        borderBottomRightRadius="30"
+        mt="3"
+      >
+        <HStack>
+          <Box width="50%" m="auto" pt="4">
+            <Text fontSize="20px" fontWeight="bold" color="#7E7E7E">
+              {userProfile.name}
+            </Text>
+
+            <Text fontSize="12px" fontWeight="bold" color="#7E7E7E" p="1">
+              needs your verification
+            </Text>
+
+            <Button
+              bg="white"
+              boxShadow="0px 2px 3px rgba(0, 0, 0, 0.15)"
+              borderRadius="70px"
+              width="100px"
+              mb="2"
+            >
+              <Text fontSize="12px" fontWeight="extrabold" color="#black">
+                Verify
+              </Text>
+            </Button>
+          </Box>
+
+          <Center>
+            <Img src="./assets/notverified.png" width="50%" height="50%" />
+          </Center>
+        </HStack>
+      </Box>
 
       <Center onClick={handleLogout}>
         <Box

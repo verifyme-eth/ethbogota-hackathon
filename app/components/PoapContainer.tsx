@@ -11,6 +11,7 @@ export default function PoapContainer({
   length,
   diff,
 }: PoapContainerProps) {
+  console.log(arr);
   return (
     <Box p="4">
       <SimpleGrid columns={4} spacing="1rem">
@@ -18,7 +19,7 @@ export default function PoapContainer({
           <>
             {arr
               .map((poap: any) => (
-                <Box key={poap.name}>
+                <Box key={poap.id}>
                   <Center>
                     <Avatar name={poap.name} src={poap.image_url} size="md" />
                   </Center>
@@ -31,7 +32,7 @@ export default function PoapContainer({
         ) : (
           <>
             {arr.map((poap: any) => (
-              <Box key={poap.name}>
+              <Box key={poap.id}>
                 <Center>
                   <Avatar name={poap.name} src={poap.image_url} size="md" />
                 </Center>
