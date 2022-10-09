@@ -1,6 +1,6 @@
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import { useLoaderData, useSubmit } from "@remix-run/react";
+import { Link, useLoaderData, useSubmit } from "@remix-run/react";
 
 import { GraphQLClient } from "graphql-request";
 
@@ -275,25 +275,33 @@ export default function Dashboard() {
 
           <Box ml="20px" mt="20px">
             <HStack>
-              <Box>
-                {post.picture ? (
-                  <Avatar
-                    size="md"
-                    src={transformToIpfsUrl(post.picture?.original?.url)}
-                  />
-                ) : (
-                  <Avatar
-                    size="md"
-                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT29B69wuAtANWIv19S-HrkYOGdUqbwnVpcTDjCoovLPA&s"
-                  />
-                )}
-              </Box>
-              <Stack>
-                <Text>{post.profile.name}</Text>
-                <Text color="green" fontSize="sm">
-                  @{post.profile.handle}
-                </Text>
-              </Stack>
+              <Link to={`/${post.profile?.handle}`}>
+                <Box>
+                  {post.profile.picture?.original?.url ? (
+                    <Avatar
+                      size="md"
+                      src={transformToIpfsUrl(
+                        post.profile?.picture?.original?.url
+                      )}
+                    />
+                  ) : (
+                    <Avatar
+                      size="md"
+                      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT29B69wuAtANWIv19S-HrkYOGdUqbwnVpcTDjCoovLPA&s"
+                    />
+                  )}
+                </Box>
+              </Link>
+
+              <Link to={`/${post.profile?.handle}`} prefetch="intent">
+                <Stack>
+                  <Text>{post.profile.name}</Text>
+                  <Text color="green" fontSize="sm">
+                    @{post.profile.handle}
+                  </Text>
+                </Stack>
+              </Link>
+
               <Box>
                 <Text ml="130px" color="gray" mb="30px" fontSize="sm">
                   {calculateHoursBetweenNowAndDate(post?.createdAt)} h
