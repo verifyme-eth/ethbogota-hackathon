@@ -114,8 +114,6 @@ export default function Dashboard() {
 
   const { address, recentsPosts, profile, indexVm } = useLoaderData();
 
-  console.log(indexVm);
-
   const handleLogout = () => {
     const formData = new FormData();
 
@@ -202,10 +200,17 @@ export default function Dashboard() {
                 alignItems="center"
                 justifyContent="center"
               >
-                <Avatar
-                  size="xl"
-                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT29B69wuAtANWIv19S-HrkYOGdUqbwnVpcTDjCoovLPA&s"
-                />
+                {profile.picture ? (
+                  <Avatar
+                    size="xl"
+                    src={transformToIpfsUrl(profile.picture?.original?.url)}
+                  />
+                ) : (
+                  <Avatar
+                    size="xl"
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT29B69wuAtANWIv19S-HrkYOGdUqbwnVpcTDjCoovLPA&s"
+                  />
+                )}
               </Box>
             </Box>
           </Box>
