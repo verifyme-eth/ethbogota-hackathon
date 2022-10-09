@@ -17,8 +17,9 @@ import {
   Text,
   Image,
   CircularProgress,
+  AvatarBadge,
 } from "@chakra-ui/react";
-import { transformToIpfsCoverImageUrl } from "~/web3/ipfs";
+import { transformToIpfsCoverImageUrl, transformToIpfsUrl } from "~/web3/ipfs";
 import { db } from "~/utils/db.server";
 
 export const loader: LoaderFunction = async ({ params }) => {
@@ -76,6 +77,8 @@ export const action: ActionFunction = async ({ request }) => {
 export default function Profile() {
   const { userProfile, poapsComparted } = useLoaderData();
 
+  console.log(userProfile);
+
   const submit = useSubmit();
 
   const handleVerify = async () => {
@@ -101,13 +104,14 @@ export default function Profile() {
           </Box>
         </Center>
       </Box>
+
       <Box
         backgroundColor="#FEE7B9"
         borderTopLeftRadius="30"
         borderTopRightRadius="30"
       >
         <Center>
-          <Flex mt="-10px">
+          <Flex mt="-60px">
             <Box mt="70px" mr="20px">
               <Text
                 textAlign="center"
@@ -121,6 +125,7 @@ export default function Profile() {
                 Followers
               </Text>
             </Box>
+
             <Box position="relative" display="inline-flex">
               <CircularProgress
                 value={80}
@@ -138,13 +143,17 @@ export default function Profile() {
                 alignItems="center"
                 justifyContent="center"
               >
-                <Avatar
-                  size="xl"
-                  name="Segun Adebayo"
-                  src={transformToIpfsCoverImageUrl(
-                    userProfile.coverPicture?.original?.url
-                  )}
-                />
+                {userProfile.picture ? (
+                  <Avatar
+                    size="xl"
+                    src={transformToIpfsUrl(userProfile.picture?.original?.url)}
+                  />
+                ) : (
+                  <Avatar
+                    size="xl"
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT29B69wuAtANWIv19S-HrkYOGdUqbwnVpcTDjCoovLPA&s"
+                  />
+                )}
               </Box>
             </Box>
             <Box mt="70px" ml="20px">

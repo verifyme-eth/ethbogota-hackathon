@@ -2,12 +2,9 @@ import {
   Flex,
   Center,
   Box,
-  ListItem,
   Text,
-  UnorderedList,
   Input,
   FormControl,
-  AvatarGroup,
   Avatar,
   SimpleGrid,
 } from "@chakra-ui/react";
@@ -19,18 +16,12 @@ export const loader: LoaderFunction = async () => {
   let addressMain = "gutybv.eth";
   let addressCompared = "cristianvaldivia.eth";
 
-  let { common, arrLength, arrDiff } = await comparePoaps(
+  const { common, arrLength, arrDiff } = await comparePoaps(
     addressMain,
     addressCompared
   );
 
   return { common, arrLength, arrDiff };
-};
-
-export const action = async (req: any) => {
-  const form = await req.formData();
-  const adress1 = form.get("adr1");
-  const adress2 = form.get("adr2");
 };
 
 type PoapContainerProps = {
@@ -47,7 +38,7 @@ function PoapContainer({ arr, length, diff }: PoapContainerProps) {
           <>
             {arr
               .map((poap: any) => (
-                <Box>
+                <Box key={poap.name}>
                   <Center>
                     <Avatar name={poap.name} src={poap.image_url} size="lg" />
                   </Center>
@@ -59,7 +50,7 @@ function PoapContainer({ arr, length, diff }: PoapContainerProps) {
         ) : (
           <>
             {arr.map((poap: any) => (
-              <Box>
+              <Box key={poap.name}>
                 <Center>
                   <Avatar name={poap.name} src={poap.image_url} size="lg" />
                 </Center>
@@ -83,18 +74,7 @@ export default function Index() {
           </Text>
         </Center>
       </Box>
-      <Box>
-        <Center>
-          <Box w="30%">
-            <form method="POST">
-              <FormControl>
-                <Input name="adr1" id="adr1" placeholder="Adress 1" />
-                <Input name="adr2" id="adr2" placeholder="Adress 2" />
-              </FormControl>
-            </form>
-          </Box>
-        </Center>
-      </Box>
+
       <PoapContainer arr={common} length={arrLength} diff={arrDiff} />
     </Flex>
   );
