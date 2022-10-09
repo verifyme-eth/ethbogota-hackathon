@@ -28,6 +28,7 @@ import {
 
 import { AiOutlineSearch } from "react-icons/ai";
 import React from "react";
+import { getRatioValidation } from "~/web3/verify-me";
 
 export const loader: LoaderFunction = async ({ request }) => {
   // Get address from cookie session
@@ -53,7 +54,26 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   const profile = responseProfile.defaultProfile;
 
-  return { recentsPosts, address, profile };
+  // Get if user is verified
+  const verified = await db.verified.findUnique({
+    where: {
+      address: address.toLowerCase(),
+    },
+  });
+
+  let indexVm = 0;
+
+  if (verified) {
+    const verifiers = JSON.parse(verified?.poaps as string);
+
+    for (let address in verifiers) {
+      indexVm += JSON.parse(verifiers[address]).length;
+    }
+  } else {
+    indexVm = 0;
+  }
+
+  return { recentsPosts, address, profile, indexVm };
 };
 
 export const action: ActionFunction = async ({ request }) => {
@@ -92,9 +112,9 @@ export const action: ActionFunction = async ({ request }) => {
 export default function Dashboard() {
   const submit = useSubmit();
 
-  const { address, recentsPosts, profile } = useLoaderData();
+  const { address, recentsPosts, profile, indexVm } = useLoaderData();
 
-  console.log(profile);
+  console.log(indexVm);
 
   const handleLogout = () => {
     const formData = new FormData();
@@ -111,8 +131,6 @@ export default function Dashboard() {
   };
 
   const handleSearch = () => {
-    console.log(value);
-
     const formData = new FormData();
 
     formData.append("profileToGo", value);
@@ -166,7 +184,10 @@ export default function Dashboard() {
           <Box>
             <Box position="relative" display="inline-flex" ml="-60px">
               <CircularProgress
-                value={80}
+                value={getRatioValidation(
+                  indexVm,
+                  profile.stats.totalFollowers
+                )}
                 size="150px"
                 color="#71AA43"
                 thickness="8px"
