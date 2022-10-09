@@ -12,15 +12,14 @@ import {
   Box,
   Button,
   Center,
-  Divider,
   Flex,
   Text,
   Image,
   CircularProgress,
-  AvatarBadge,
 } from "@chakra-ui/react";
-import { transformToIpfsCoverImageUrl, transformToIpfsUrl } from "~/web3/ipfs";
+import { transformToIpfsUrl } from "~/web3/ipfs";
 import { db } from "~/utils/db.server";
+import PoapContainer from "~/components/PoapContainer";
 
 export const loader: LoaderFunction = async ({ params }) => {
   // TODO: get the address from cookie session
@@ -36,9 +35,12 @@ export const loader: LoaderFunction = async ({ params }) => {
 
   const userProfile = response.profile;
 
-  const poapsComparted = await comparePoaps(address, userProfile.ownedBy);
+  const { common, arrLength, arrDiff } = await comparePoaps(
+    address,
+    userProfile.ownedBy
+  );
 
-  return { userProfile, poapsComparted };
+  return { userProfile, common, arrLength, arrDiff };
 };
 
 export const action: ActionFunction = async ({ request }) => {
@@ -49,8 +51,6 @@ export const action: ActionFunction = async ({ request }) => {
 
   if (!address || typeof address !== "string") return null;
   if (!poaps || typeof poaps !== "string") return null;
-
-  console.log(poaps);
 
   try {
     const verified = await db.verified.findUnique({
@@ -75,25 +75,23 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 export default function Profile() {
-  const { userProfile, poapsComparted } = useLoaderData();
-
-  console.log(userProfile);
+  const { userProfile, common, arrLength, arrDiff } = useLoaderData();
 
   const submit = useSubmit();
 
-  const handleVerify = async () => {
-    const formData = new FormData();
+  // const handleVerify = async () => {
+  //   const formData = new FormData();
 
-    formData.append("address", "0x3aeC2276326CDC8E9a8A4351c338166e67105AC3");
-    formData.append("poaps", poapsComparted.length);
+  //   formData.append("address", "0x3aeC2276326CDC8E9a8A4351c338166e67105AC3");
+  //   formData.append("poaps", poapsComparted.length);
 
-    submit(formData, {
-      action: `${userProfile.handle}/?index`,
-      method: "post",
-      encType: "application/x-www-form-urlencoded",
-      replace: true,
-    });
-  };
+  //   submit(formData, {
+  //     action: `${userProfile.handle}/?index`,
+  //     method: "post",
+  //     encType: "application/x-www-form-urlencoded",
+  //     replace: true,
+  //   });
+  // };
 
   return (
     <Box>
@@ -203,17 +201,9 @@ export default function Profile() {
         </Box>
       </Box>
 
-      <Text
-        textAlign="center"
-        fontSize="20px"
-        fontWeight="light"
-        color="second"
-        mt="20px"
-      >
-        Poaps compartidos: {poapsComparted.length}
-      </Text>
+      <PoapContainer arr={common} length={arrLength} diff={arrDiff} />
 
-      <Center mt="20px">
+      {/* <Center mt="20px">
         <Button
           backgroundColor="second"
           color="white"
@@ -223,7 +213,7 @@ export default function Profile() {
         >
           Verificar
         </Button>
-      </Center>
+      </Center> */}
     </Box>
   );
 }
