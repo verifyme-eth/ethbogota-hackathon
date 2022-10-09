@@ -147,13 +147,13 @@ export default function Login() {
 
           <Box>
             <Center>
-              <Box boxSize="270px">
-                <Image src="./assets/Cuadrados.png" alt="hola" />
+              <Box boxSize="170px">
+                <Image src="./assets/Cuadrados.png" />
               </Box>
             </Center>
           </Box>
 
-          <Box pt={16}>
+          <Box pt={10}>
             <Center>
               <Button
                 backgroundColor="#1E7EFD"

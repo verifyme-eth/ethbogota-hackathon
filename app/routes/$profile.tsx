@@ -19,14 +19,16 @@ import {
   Center,
   Flex,
   Text,
-  Image,
   CircularProgress,
   Img,
   HStack,
   Divider,
+  Icon,
 } from "@chakra-ui/react";
 
 import PoapContainer from "~/components/PoapContainer";
+
+import { BiLogOutCircle } from "react-icons/bi";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
   // Get address from cookie session
@@ -195,21 +197,13 @@ export default function Profile() {
   };
 
   return (
-    <Box>
-      <Box pt={10}>
-        <Center>
-          <Box boxSize="140px">
-            <Image src="./assets/LogoCompleto.png" />
-          </Box>
-        </Center>
-      </Box>
-
+    <Box pt="20px">
       <Box
         backgroundColor="#FEE7B9"
         borderTopLeftRadius="30"
         borderTopRightRadius="30"
       >
-        <Center>
+        <Center mt="60px">
           <Flex mt="-60px">
             <Box mt="70px" mr="20px">
               <Text
@@ -218,7 +212,7 @@ export default function Profile() {
                 fontWeight="bold"
                 color="black"
               >
-                7
+                {userProfile.stats.totalFollowers}
               </Text>
               <Text fontSize="16px" fontWeight="bold" color="#6F6F6F">
                 Followers
@@ -274,7 +268,7 @@ export default function Profile() {
                 fontWeight="bold"
                 color="black"
               >
-                37
+                {userProfile.stats.totalFollowing}
               </Text>
               <Text fontSize="16px" fontWeight="bold" color="#6F6F6F">
                 Following
@@ -393,21 +387,18 @@ export default function Profile() {
         )}
       </Box>
 
-      <Center onClick={handleLogout}>
-        <Box
-          bg="third"
-          roundedTop="30px"
-          bottom="0"
-          position="fixed"
-          width="90%"
-          height="50px"
-          my="auto"
-        >
-          <Text textAlign="center" fontSize="20px" fontWeight="bold" pt="8px">
-            Logout
-          </Text>
-        </Box>
-      </Center>
+      <Box
+        bg="third"
+        roundedTopLeft="5px"
+        bottom="0"
+        right="0"
+        position="fixed"
+        height="50px"
+        width="40px"
+        onClick={handleLogout}
+      >
+        <Icon fontSize="4xl" color="lensDark" as={BiLogOutCircle} />
+      </Box>
     </Box>
   );
 }
