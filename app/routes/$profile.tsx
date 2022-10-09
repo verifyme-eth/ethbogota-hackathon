@@ -58,80 +58,122 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     },
   });
 
-  const verifiers = JSON.parse(verified?.poaps as string);
-
   let indexVm = 0;
 
   let verifiedForUser = false;
 
-  const verifiersWallet = Object.keys(verifiers);
+  if (verified) {
+    const verifiers = JSON.parse(verified?.poaps as string);
 
-  // Check if verifiers wallet is the same as the user wallet
-  for (let i = 0; i < verifiersWallet.length; i++) {
-    if (verifiersWallet[i] == address) {
-      verifiedForUser = true;
+    const verifiersWallet = Object.keys(verifiers);
+
+    // Check if verifiers wallet is the same as the user wallet
+    for (let i = 0; i < verifiersWallet.length; i++) {
+      if (verifiersWallet[i] == address) {
+        verifiedForUser = true;
+      }
     }
-  }
 
-  for (let address in verifiers) {
-    indexVm += verifiers[address].length;
+    for (let address in verifiers) {
+      indexVm += verifiers[address].length;
+    }
+  } else {
+    indexVm = 0;
+    verifiedForUser = false;
   }
 
   return { userProfile, common, arrLength, arrDiff, indexVm, verifiedForUser };
 };
 
-export const action: ActionFunction = async ({ request }) => {
+export const action: ActionFunction = async ({ request, params }) => {
   const form = await request.formData();
 
   const address = form.get("address");
-  const connected = form.get("connected");
+  const profileAddress = form.get("profileAddress");
+  const poaps = form.get("poaps");
+  const intent = form.get("intent");
 
   if (!address || typeof address !== "string") return null;
-  if (!connected || typeof connected !== "string") return null;
+  if (!profileAddress || typeof profileAddress !== "string") return null;
+  if (!poaps || typeof poaps !== "string") return null;
+  if (!intent || typeof intent !== "string") return null;
 
-  await db.user.update({
-    where: {
-      address,
-    },
-    data: {
-      connected: connected === "true",
-    },
-  });
+  console.log(profileAddress);
 
-  const session = await getSession(request.headers.get("Cookie"));
+  if (intent == "verify") {
+    const verified = await db.verified.findUnique({
+      where: {
+        address: profileAddress.toLowerCase(),
+      },
+    });
 
-  return redirect(`/login`, {
-    headers: {
-      "Set-Cookie": await destroySession(session),
-    },
-  });
+    console.log(verified);
+
+    // if (verified) {
+    //   const poapsVerified = JSON.parse(verified.poaps);
+
+    //   poapsVerified[address].push(poaps);
+
+    //   await db.verified.update({
+    //     where: {
+    //       address: address.toLowerCase(),
+    //     },
+    //     data: {
+    //       poaps: JSON.stringify(poapsVerified),
+    //     },
+    //   });
+    // } else {
+    //   const poapsVerified = {
+    //     [address]: [poaps],
+    //   };
+
+    //   await db.verified.create({
+    //     data: {
+    //       address: address.toLowerCase(),
+    //       poaps: JSON.stringify(poapsVerified),
+    //     },
+    //   });
+    // }
+  }
+
+  return redirect(request.url);
 };
 
 export default function Profile() {
-  const { userProfile, common, arrLength, arrDiff, indexVm, verifiedForUser } =
-    useLoaderData();
+  const {
+    address,
+    userProfile,
+    common,
+    arrLength,
+    arrDiff,
+    indexVm,
+    verifiedForUser,
+  } = useLoaderData();
 
   const submit = useSubmit();
 
-  // const handleVerify = async () => {
-  //   const formData = new FormData();
+  const handleVerify = async () => {
+    const formData = new FormData();
 
-  //   formData.append("address", "0x3aeC2276326CDC8E9a8A4351c338166e67105AC3");
-  //   formData.append("poaps", poapsComparted.length);
+    formData.append("address", address);
+    formData.append("profileAddress", userProfile.ownedBy);
+    formData.append("poaps", "[1 , 2 , 3 , 5]");
+    formData.append("intent", "verify");
 
-  //   submit(formData, {
-  //     action: `${userProfile.handle}/?index`,
-  //     method: "post",
-  //     encType: "application/x-www-form-urlencoded",
-  //     replace: true,
-  //   });
-  // };
+    submit(formData, {
+      action: `${userProfile.handle}/?index`,
+      method: "post",
+      encType: "application/x-www-form-urlencoded",
+      replace: true,
+    });
+  };
 
   const handleLogout = () => {
     const formData = new FormData();
 
     formData.append("address", "0x3aec2276326cdc8e9a8a4351c338166e67105ac3");
     formData.append("connected", "false");
+    formData.append("intent", "logout");
 
     submit(formData, {
       action: "/dashboard/?index",
@@ -289,6 +331,7 @@ export default function Profile() {
                 borderRadius="70px"
                 width="100px"
                 mb="2"
+                onClick={handleVerify}
               >
                 <Text fontSize="12px" fontWeight="extrabold" color="#black">
                   Verify
