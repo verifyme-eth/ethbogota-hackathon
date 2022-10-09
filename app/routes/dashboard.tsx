@@ -8,8 +8,21 @@ import { ExplorePublications } from "~/web3/lens";
 
 import { db } from "~/utils/db.server";
 import { destroySession, getSession } from "~/bff/session";
+import { transformToIpfsUrl } from "~/web3/ipfs";
 
-import { Avatar, Box, Center, Flex, Stack, Text } from "@chakra-ui/react";
+import {
+  Avatar,
+  Box,
+  Center,
+  Flex,
+  Stack,
+  Text,
+  Image,
+  HStack,
+  CircularProgress,
+  Input,
+  Divider,
+} from "@chakra-ui/react";
 
 export const loader: LoaderFunction = async ({ request }) => {
   const session = await getSession(request.headers.get("Cookie"));
@@ -56,7 +69,8 @@ export const action: ActionFunction = async ({ request }) => {
 
 export default function Dashboard() {
   const submit = useSubmit();
-  const { address } = useLoaderData();
+  const { address, recentsPosts } = useLoaderData();
+  console.log(recentsPosts);
 
   const handleLogout = () => {
     const formData = new FormData();
@@ -71,35 +85,149 @@ export default function Dashboard() {
       replace: true,
     });
   };
-
+  console.log(recentsPosts);
   return (
-    <Stack>
-      <Box
-        maxW="sm"
-        borderWidth="1px"
-        borderRadius="lg"
-        overflow="hidden"
-        p="3"
-      >
-        <Flex justifyContent="space-between">
-          <Avatar
-            size="lg"
-            name="Segun Adebayo"
-            src="https://image.shutterstock.com/image-vector/profile-vector-glyph-flat-icon-260nw-1697842372.jpg"
-          />
-
-          <Box my="auto">
-            <Text>LensBeats</Text>
-            <Text>@lensbeats.lend</Text>
+    <Box>
+      <Box pt={10}>
+        <Center>
+          <Box boxSize="140px">
+            <Image src="./assets/LogoCompleto.png" />
+          </Box>
+        </Center>
+      </Box>
+      <Box mt="-80px">
+        <HStack>
+          <Box px={20} backgroundColor="#FEDFA2">
+            <Text
+              textAlign="center"
+              fontSize="30px"
+              fontWeight="bold"
+              color="black"
+            >
+              Flourish
+            </Text>
+            <Text
+              textAlign="center"
+              fontSize="15px"
+              fontWeight="600"
+              color="#767676"
+            >
+              @Flourish.lens
+            </Text>
+          </Box>
+          <Box>
+            <Box position="relative" display="inline-flex" ml="-60px">
+              <CircularProgress
+                value={80}
+                size="150px"
+                color="#71AA43"
+                thickness="8px"
+              />
+              <Box
+                top={0}
+                left={0}
+                bottom={0}
+                right={0}
+                position="absolute"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Avatar
+                  size="xl"
+                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT29B69wuAtANWIv19S-HrkYOGdUqbwnVpcTDjCoovLPA&s"
+                />
+              </Box>
+            </Box>
+          </Box>
+        </HStack>
+      </Box>
+      <Box>
+        <Flex mt="-60px">
+          <Box mt="20px" mr="30px" ml="20px">
+            <Text
+              textAlign="center"
+              fontSize="24px"
+              fontWeight="bold"
+              color="black"
+            >
+              7
+            </Text>
+            <Text fontSize="16px" fontWeight="bold" color="#6F6F6F">
+              Followers
+            </Text>
           </Box>
 
-          <Box my="auto" left={0}>
-            <Text>2h</Text>
+          <Box mt="20px" pl="10px">
+            <Text
+              textAlign="center"
+              fontSize="24px"
+              fontWeight="bold"
+              color="black"
+            >
+              37
+            </Text>
+            <Text fontSize="16px" fontWeight="bold" color="#6F6F6F">
+              Following
+            </Text>
           </Box>
         </Flex>
-        Este post deberia ser un componente separado y hermoso, por ahora voy a
-        copiar el diseño que tenia anteriormente
       </Box>
+      <Box mt="20px" ml="15px" mb="18px">
+        <HStack>
+          <Box>
+            <Text fontWeight="bold">Find</Text>
+          </Box>
+          <Box width="330px">
+            <Input
+              placeholder="Find your friend's"
+              borderRadius={30}
+              backgroundColor="#E3E3E4"
+            />
+          </Box>
+        </HStack>
+      </Box>
+      {recentsPosts.items.map((post: any) => (
+        <Box key={post.id}>
+          <Divider borderWidth={1} />
+
+          <Box ml="20px" mt="20px">
+            <HStack>
+              <Box>
+                {post.picture ? (
+                  <Avatar
+                    size="md"
+                    src={transformToIpfsUrl(post.picture?.original?.url)}
+                  />
+                ) : (
+                  <Avatar
+                    size="md"
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT29B69wuAtANWIv19S-HrkYOGdUqbwnVpcTDjCoovLPA&s"
+                  />
+                )}
+              </Box>
+              <Stack>
+                <Text>{post.profile.name}</Text>
+                <Text color="green" fontSize="sm">
+                  @{post.profile.handle}
+                </Text>
+              </Stack>
+              <Box>
+                <Text ml="130px" color="gray" mb="30px" fontSize="sm">
+                  a day ago
+                </Text>
+              </Box>
+            </HStack>
+            <Box ml="60px" mt="10px">
+              <Text>
+                Lens Creator Bytes <br /> As the Lens fam continues to grow we
+                are starting a new weekly series where we get members of the
+                community to share some insights about their...
+              </Text>
+            </Box>
+          </Box>
+        </Box>
+      ))}
 
       <Center onClick={handleLogout}>
         <Box
@@ -116,6 +244,6 @@ export default function Dashboard() {
           </Text>
         </Box>
       </Center>
-    </Stack>
+    </Box>
   );
 }
