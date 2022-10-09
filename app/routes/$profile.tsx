@@ -60,14 +60,24 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 
   const verifiers = JSON.parse(verified?.poaps as string);
 
-  console.log(verifiers);
-
   let indexVm = 0;
+
+  let verifiedForUser = false;
+
+  const verifiersWallet = Object.keys(verifiers);
+
+  // Check if verifiers wallet is the same as the user wallet
+  for (let i = 0; i < verifiersWallet.length; i++) {
+    if (verifiersWallet[i] == address) {
+      verifiedForUser = true;
+    }
+  }
+
   for (let address in verifiers) {
     indexVm += verifiers[address].length;
   }
 
-  return { userProfile, common, arrLength, arrDiff, indexVm };
+  return { userProfile, common, arrLength, arrDiff, indexVm, verifiedForUser };
 };
 
 export const action: ActionFunction = async ({ request }) => {
@@ -98,7 +108,8 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 export default function Profile() {
-  const { userProfile, common, arrLength, arrDiff, indexVm } = useLoaderData();
+  const { userProfile, common, arrLength, arrDiff, indexVm, verifiedForUser } =
+    useLoaderData();
 
   const submit = useSubmit();
 
@@ -261,7 +272,7 @@ export default function Profile() {
         borderBottomRightRadius="30"
         mt="3"
       >
-        {userProfile.verified ? (
+        {!verifiedForUser ? (
           <HStack>
             <Box width="50%" m="auto" pt="4">
               <Text fontSize="20px" fontWeight="bold" color="#7E7E7E">
