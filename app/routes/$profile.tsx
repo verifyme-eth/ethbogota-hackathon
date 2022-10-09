@@ -240,33 +240,47 @@ export default function Profile() {
         borderBottomRightRadius="30"
         mt="3"
       >
-        <HStack>
-          <Box width="50%" m="auto" pt="4">
-            <Text fontSize="20px" fontWeight="bold" color="#7E7E7E">
-              {userProfile.name}
-            </Text>
-
-            <Text fontSize="12px" fontWeight="bold" color="#7E7E7E" p="1">
-              needs your verification
-            </Text>
-
-            <Button
-              bg="white"
-              boxShadow="0px 2px 3px rgba(0, 0, 0, 0.15)"
-              borderRadius="70px"
-              width="100px"
-              mb="2"
-            >
-              <Text fontSize="12px" fontWeight="extrabold" color="#black">
-                Verify
+        {false ? (
+          <HStack>
+            <Box width="50%" m="auto" pt="4">
+              <Text fontSize="20px" fontWeight="bold" color="#7E7E7E">
+                {userProfile.name}
               </Text>
-            </Button>
-          </Box>
 
-          <Center>
-            <Img src="./assets/notverified.png" width="50%" height="50%" />
-          </Center>
-        </HStack>
+              <Text fontSize="12px" fontWeight="bold" color="#7E7E7E" p="1">
+                needs your verification
+              </Text>
+
+              <Button
+                bg="white"
+                boxShadow="0px 2px 3px rgba(0, 0, 0, 0.15)"
+                borderRadius="70px"
+                width="100px"
+                mb="2"
+              >
+                <Text fontSize="12px" fontWeight="extrabold" color="#black">
+                  Verify
+                </Text>
+              </Button>
+            </Box>
+
+            <Center>
+              <Img src="./assets/notverified.png" width="50%" height="50%" />
+            </Center>
+          </HStack>
+        ) : (
+          <HStack>
+            <Box width="80%">
+              <Text fontSize="20px" fontWeight="bold" color="#7E7E7E" p="3">
+                You have verified {userProfile.name}
+              </Text>
+            </Box>
+
+            <Center>
+              <Img src="./assets/verified.png" width="50%" height="50%" />
+            </Center>
+          </HStack>
+        )}
       </Box>
 
       <Center onClick={handleLogout}>
