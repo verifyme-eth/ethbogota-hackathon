@@ -32,6 +32,8 @@ import {
 } from "@chakra-ui/react";
 
 import { AiOutlineSearch } from "react-icons/ai";
+import { BsPlus } from "react-icons/bs";
+
 import React from "react";
 import { getRatioValidation } from "~/web3/verify-me";
 import { resume } from "~/utils/text";
@@ -165,6 +167,7 @@ export default function Dashboard() {
       </Box>
 
       {transition.state === "idle" && (
+        // {false && (
         <>
           <Box mt="-80px">
             <HStack>
@@ -354,15 +357,30 @@ export default function Dashboard() {
       )}
 
       {transition.state === "loading" && (
+        // {true && (
         <Box mt="-80px">
           <Text textAlign="center" fontSize="26px" color="lensDark" mt="25px">
-            Connecting with garden
+            Joining Lens protocol with POAPs
           </Text>
 
-          <Center>
-            <Box mt="20px">
-              <Image src="./assets/lens-loading.gif" rounded="2xl" />
+          <Flex justifyContent="center">
+            <Box mt="20px" width="40%" height="40%">
+              <Image src="./assets/LENS LOGO__Lens_ icon.png" />
             </Box>
+
+            <Icon fontSize="4xl" color="lensDark" as={BsPlus} m="auto" />
+
+            <Box mt="28px" width="40%" height="40%">
+              <Image
+                src="https://www.niftytable.com/content/images/2021/09/v2-jzTZE9PtJ8Mmvqe_qnjc4DMzhJmNtBkdALWAtyjc.jpg "
+                width="80%"
+                height="80%"
+              />
+            </Box>
+          </Flex>
+
+          <Center mt="50px">
+            <CircularProgress color="lensDark" isIndeterminate />
           </Center>
         </Box>
       )}
