@@ -137,9 +137,9 @@ export default function Login() {
                 align="center"
                 pb={5}
               >
-                The autentication{" "}
+                The verification{" "}
                 <Text as="span" color="#71AA43">
-                  for all the world
+                  for everyone
                 </Text>
               </Text>
             </Center>

@@ -29,6 +29,8 @@ import {
 import { AiOutlineSearch } from "react-icons/ai";
 import React from "react";
 import { getRatioValidation } from "~/web3/verify-me";
+import { resume } from "~/utils/text";
+import { calculateHoursBetweenNowAndDate } from "~/utils/hour";
 
 export const loader: LoaderFunction = async ({ request }) => {
   // Get address from cookie session
@@ -146,7 +148,7 @@ export default function Dashboard() {
   const [value, setValue] = React.useState("");
   const handleChange = (event: any) => setValue(event.target.value);
 
-  // console.log(recentsPosts);
+  console.log(recentsPosts);
 
   return (
     <Box>
@@ -294,15 +296,20 @@ export default function Dashboard() {
               </Stack>
               <Box>
                 <Text ml="130px" color="gray" mb="30px" fontSize="sm">
-                  a day ago
+                  {calculateHoursBetweenNowAndDate(post?.createdAt)} h
                 </Text>
               </Box>
             </HStack>
+
             <Box ml="60px" mt="10px">
-              <Text>
-                Lens Creator Bytes <br /> As the Lens fam continues to grow we
-                are starting a new weekly series where we get members of the
-                community to share some insights about their...
+              <Text
+                pr="10"
+                pb="10"
+                textAlign="justify"
+                fontSize="16px"
+                color="#7E7E7E"
+              >
+                {resume(post?.metadata?.content)}
               </Text>
             </Box>
           </Box>
