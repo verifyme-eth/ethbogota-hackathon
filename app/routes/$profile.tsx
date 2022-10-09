@@ -75,7 +75,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     }
 
     for (let address in verifiers) {
-      indexVm += verifiers[address].length;
+      indexVm += JSON.parse(verifiers[address]).length;
     }
   } else {
     indexVm = 0;
@@ -114,16 +114,20 @@ export const action: ActionFunction = async ({ request }) => {
     });
 
     if (verified) {
-      //   const poapsVerified = JSON.parse(verified.poaps);
-      //   poapsVerified[address].push(poaps);
-      //   await db.verified.update({
-      //     where: {
-      //       address: address.toLowerCase(),
-      //     },
-      //     data: {
-      //       poaps: JSON.stringify(poapsVerified),
-      //     },
-      //   });
+      const verifiers = JSON.parse(verified?.poaps as string);
+
+      verifiers[address] = poaps;
+
+      console.log(verifiers);
+
+      await db.verified.update({
+        where: {
+          address: profileAddress.toLowerCase(),
+        },
+        data: {
+          poaps: JSON.stringify(verifiers),
+        },
+      });
     } else {
       const poapsVerified = {
         [address]: poaps,
@@ -152,16 +156,16 @@ export default function Profile() {
     verifiedForUser,
   } = useLoaderData();
 
-  console.log(address);
-
   const submit = useSubmit();
 
   const handleVerify = async () => {
     const formData = new FormData();
 
+    const poaps = common.map((poap: any) => poap.id);
+
     formData.append("address", address);
     formData.append("profileAddress", userProfile.ownedBy);
-    formData.append("poaps", "[1 , 2 , 3 , 5]");
+    formData.append("poaps", `[${poaps}]`);
     formData.append("intent", "verify");
 
     submit(formData, {
