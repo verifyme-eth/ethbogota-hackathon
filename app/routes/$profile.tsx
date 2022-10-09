@@ -82,10 +82,18 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     verifiedForUser = false;
   }
 
-  return { userProfile, common, arrLength, arrDiff, indexVm, verifiedForUser };
+  return {
+    userProfile,
+    address,
+    common,
+    arrLength,
+    arrDiff,
+    indexVm,
+    verifiedForUser,
+  };
 };
 
-export const action: ActionFunction = async ({ request, params }) => {
+export const action: ActionFunction = async ({ request }) => {
   const form = await request.formData();
 
   const address = form.get("address");
@@ -98,8 +106,6 @@ export const action: ActionFunction = async ({ request, params }) => {
   if (!poaps || typeof poaps !== "string") return null;
   if (!intent || typeof intent !== "string") return null;
 
-  console.log(profileAddress);
-
   if (intent == "verify") {
     const verified = await db.verified.findUnique({
       where: {
@@ -107,33 +113,29 @@ export const action: ActionFunction = async ({ request, params }) => {
       },
     });
 
-    console.log(verified);
+    if (verified) {
+      //   const poapsVerified = JSON.parse(verified.poaps);
+      //   poapsVerified[address].push(poaps);
+      //   await db.verified.update({
+      //     where: {
+      //       address: address.toLowerCase(),
+      //     },
+      //     data: {
+      //       poaps: JSON.stringify(poapsVerified),
+      //     },
+      //   });
+    } else {
+      const poapsVerified = {
+        [address]: poaps,
+      };
 
-    // if (verified) {
-    //   const poapsVerified = JSON.parse(verified.poaps);
-
-    //   poapsVerified[address].push(poaps);
-
-    //   await db.verified.update({
-    //     where: {
-    //       address: address.toLowerCase(),
-    //     },
-    //     data: {
-    //       poaps: JSON.stringify(poapsVerified),
-    //     },
-    //   });
-    // } else {
-    //   const poapsVerified = {
-    //     [address]: [poaps],
-    //   };
-
-    //   await db.verified.create({
-    //     data: {
-    //       address: address.toLowerCase(),
-    //       poaps: JSON.stringify(poapsVerified),
-    //     },
-    //   });
-    // }
+      await db.verified.create({
+        data: {
+          address: profileAddress.toLowerCase(),
+          poaps: JSON.stringify(poapsVerified),
+        },
+      });
+    }
   }
 
   return redirect(request.url);
@@ -141,14 +143,16 @@ export const action: ActionFunction = async ({ request, params }) => {
 
 export default function Profile() {
   const {
-    address,
     userProfile,
+    address,
     common,
     arrLength,
     arrDiff,
     indexVm,
     verifiedForUser,
   } = useLoaderData();
+
+  console.log(address);
 
   const submit = useSubmit();
 
