@@ -12,27 +12,28 @@ export default function PoapContainer({
   diff,
 }: PoapContainerProps) {
   return (
-    <Box pt="1rem" pb="1rem">
-      <SimpleGrid columns={3} spacing="1.5rem">
+    <Box p="4">
+      <SimpleGrid columns={4} spacing="1rem">
         {length > 11 ? (
           <>
             {arr
               .map((poap: any) => (
                 <Box key={poap.name}>
                   <Center>
-                    <Avatar name={poap.name} src={poap.image_url} size="lg" />
+                    <Avatar name={poap.name} src={poap.image_url} size="md" />
                   </Center>
                 </Box>
               ))
               .slice(0, 11)}
-            <Box>+ {diff}</Box>
+
+            <Box m="auto">+ {diff}</Box>
           </>
         ) : (
           <>
             {arr.map((poap: any) => (
               <Box key={poap.name}>
                 <Center>
-                  <Avatar name={poap.name} src={poap.image_url} size="lg" />
+                  <Avatar name={poap.name} src={poap.image_url} size="md" />
                 </Center>
               </Box>
             ))}

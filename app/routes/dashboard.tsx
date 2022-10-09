@@ -11,7 +11,11 @@ import { destroySession, getSession } from "~/bff/session";
 
 import { Avatar, Box, Center, Flex, Stack, Text } from "@chakra-ui/react";
 
-export const loader: LoaderFunction = async () => {
+export const loader: LoaderFunction = async ({ request }) => {
+  const session = await getSession(request.headers.get("Cookie"));
+
+  const address = session.get("address");
+
   const lens = new GraphQLClient("https://api.lens.dev/playground");
 
   console.log("[dashboard/friends] Fetching feed from Lens API ...");
@@ -20,7 +24,7 @@ export const loader: LoaderFunction = async () => {
 
   const recentsPosts = response.explorePublications;
 
-  return recentsPosts;
+  return { recentsPosts, address };
 };
 
 export const action: ActionFunction = async ({ request }) => {
@@ -31,8 +35,6 @@ export const action: ActionFunction = async ({ request }) => {
 
   if (!address || typeof address !== "string") return null;
   if (!connected || typeof connected !== "string") return null;
-
-  console.log(address);
 
   await db.user.update({
     where: {
@@ -54,12 +56,12 @@ export const action: ActionFunction = async ({ request }) => {
 
 export default function Dashboard() {
   const submit = useSubmit();
-  // const recentsPosts = useLoaderData();
+  const { address } = useLoaderData();
 
   const handleLogout = () => {
     const formData = new FormData();
 
-    formData.append("address", "0x3aec2276326cdc8e9a8a4351c338166e67105ac3");
+    formData.append("address", address);
     formData.append("connected", "false");
 
     submit(formData, {
@@ -69,6 +71,7 @@ export default function Dashboard() {
       replace: true,
     });
   };
+
   return (
     <Stack>
       <Box

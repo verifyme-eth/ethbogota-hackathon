@@ -16,14 +16,18 @@ import {
   Text,
   Image,
   CircularProgress,
+  Img,
 } from "@chakra-ui/react";
+
 import { transformToIpfsUrl } from "~/web3/ipfs";
 import { db } from "~/utils/db.server";
 import PoapContainer from "~/components/PoapContainer";
+import { destroySession, getSession } from "~/bff/session";
 
-export const loader: LoaderFunction = async ({ params }) => {
-  // TODO: get the address from cookie session
-  const address = "0x3aeC2276326CDC8E9a8A4351c338166e67105AC3";
+export const loader: LoaderFunction = async ({ params, request }) => {
+  const session = await getSession(request.headers.get("Cookie"));
+
+  const address = session.get("address");
 
   const lens = new GraphQLClient("https://api.lens.dev/playground");
 
@@ -47,31 +51,27 @@ export const action: ActionFunction = async ({ request }) => {
   const form = await request.formData();
 
   const address = form.get("address");
-  const poaps = form.get("poaps");
+  const connected = form.get("connected");
 
   if (!address || typeof address !== "string") return null;
-  if (!poaps || typeof poaps !== "string") return null;
+  if (!connected || typeof connected !== "string") return null;
 
-  try {
-    const verified = await db.verified.findUnique({
-      where: {
-        address,
-      },
-    });
+  await db.user.update({
+    where: {
+      address,
+    },
+    data: {
+      connected: connected === "true",
+    },
+  });
 
-    await db.verified.update({
-      where: {
-        address: address,
-      },
-      data: {
-        indexVM: verified!.indexVM + Number(poaps),
-      },
-    });
-  } catch (error) {
-    console.log(error);
-  }
+  const session = await getSession(request.headers.get("Cookie"));
 
-  return redirect(`/verified`);
+  return redirect(`/login`, {
+    headers: {
+      "Set-Cookie": await destroySession(session),
+    },
+  });
 };
 
 export default function Profile() {
@@ -92,6 +92,20 @@ export default function Profile() {
   //     replace: true,
   //   });
   // };
+
+  const handleLogout = () => {
+    const formData = new FormData();
+
+    formData.append("address", "0x3aec2276326cdc8e9a8a4351c338166e67105ac3");
+    formData.append("connected", "false");
+
+    submit(formData, {
+      action: "/dashboard/?index",
+      method: "post",
+      encType: "application/x-www-form-urlencoded",
+      replace: true,
+    });
+  };
 
   return (
     <Box>
@@ -201,19 +215,35 @@ export default function Profile() {
         </Box>
       </Box>
 
+      <Flex>
+        <Text fontSize="16px" fontWeight="light" color="#666666" m="auto">
+          Shared Poaps
+        </Text>
+
+        <Img
+          src="https://www.niftytable.com/content/images/2021/09/v2-jzTZE9PtJ8Mmvqe_qnjc4DMzhJmNtBkdALWAtyjc.jpg "
+          width="20%"
+          height="20%"
+        />
+      </Flex>
+
       <PoapContainer arr={common} length={arrLength} diff={arrDiff} />
 
-      {/* <Center mt="20px">
-        <Button
-          backgroundColor="second"
-          color="white"
-          rounded={"full"}
-          fontSize="18px"
-          onClick={handleVerify}
+      <Center onClick={handleLogout}>
+        <Box
+          bg="third"
+          roundedTop="30px"
+          bottom="0"
+          position="fixed"
+          width="90%"
+          height="50px"
+          my="auto"
         >
-          Verificar
-        </Button>
-      </Center> */}
+          <Text textAlign="center" fontSize="20px" fontWeight="bold" pt="8px">
+            Logout
+          </Text>
+        </Box>
+      </Center>
     </Box>
   );
 }
