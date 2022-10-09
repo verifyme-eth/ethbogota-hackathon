@@ -22,7 +22,12 @@ import {
   CircularProgress,
   Input,
   Divider,
+  Button,
+  Icon,
 } from "@chakra-ui/react";
+
+import { AiOutlineSearch } from "react-icons/ai";
+import React from "react";
 
 export const loader: LoaderFunction = async ({ request }) => {
   const session = await getSession(request.headers.get("Cookie"));
@@ -45,6 +50,12 @@ export const action: ActionFunction = async ({ request }) => {
 
   const address = form.get("address");
   const connected = form.get("connected");
+  const intent = form.get("intent");
+  const profileToGo = form.get("profileToGo");
+
+  if (intent === "search") {
+    return redirect(`/${profileToGo}`);
+  }
 
   if (!address || typeof address !== "string") return null;
   if (!connected || typeof connected !== "string") return null;
@@ -69,8 +80,10 @@ export const action: ActionFunction = async ({ request }) => {
 
 export default function Dashboard() {
   const submit = useSubmit();
+
   const { address, recentsPosts } = useLoaderData();
-  console.log(recentsPosts);
+
+  // console.log(recentsPosts);
 
   const handleLogout = () => {
     const formData = new FormData();
@@ -85,7 +98,29 @@ export default function Dashboard() {
       replace: true,
     });
   };
-  console.log(recentsPosts);
+
+  const handleSearch = () => {
+    console.log(value);
+
+    const formData = new FormData();
+
+    formData.append("profileToGo", value);
+    formData.append("intent", "search");
+
+    submit(formData, {
+      action: "/dashboard/?index",
+      method: "post",
+      encType: "application/x-www-form-urlencoded",
+      replace: true,
+    });
+  };
+
+  // TODO: can I use this?
+  const [value, setValue] = React.useState("");
+  const handleChange = (event: any) => setValue(event.target.value);
+
+  // console.log(recentsPosts);
+
   return (
     <Box>
       <Box pt={10}>
@@ -95,6 +130,7 @@ export default function Dashboard() {
           </Box>
         </Center>
       </Box>
+
       <Box mt="-80px">
         <HStack>
           <Box px={20} backgroundColor="#FEDFA2">
@@ -115,6 +151,7 @@ export default function Dashboard() {
               @Flourish.lens
             </Text>
           </Box>
+
           <Box>
             <Box position="relative" display="inline-flex" ml="-60px">
               <CircularProgress
@@ -142,6 +179,7 @@ export default function Dashboard() {
           </Box>
         </HStack>
       </Box>
+
       <Box>
         <Flex mt="-60px">
           <Box mt="20px" mr="30px" ml="20px">
@@ -173,20 +211,25 @@ export default function Dashboard() {
           </Box>
         </Flex>
       </Box>
-      <Box mt="20px" ml="15px" mb="18px">
+
+      <Box mt="20px" ml="15px" mb="18px" mr="15px">
         <HStack>
-          <Box>
-            <Text fontWeight="bold">Find</Text>
-          </Box>
           <Box width="330px">
             <Input
-              placeholder="Find your friend's"
-              borderRadius={30}
+              value={value}
+              onChange={handleChange}
+              placeholder="Find your friends"
+              borderRadius={20}
               backgroundColor="#E3E3E4"
             />
           </Box>
+
+          <Button onClick={handleSearch}>
+            <Icon fontSize="4xl" color="green.800" as={AiOutlineSearch} />
+          </Button>
         </HStack>
       </Box>
+
       {recentsPosts.items.map((post: any) => (
         <Box key={post.id}>
           <Divider borderWidth={1} />

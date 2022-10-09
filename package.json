@@ -26,6 +26,7 @@
     "graphql-request": "^5.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-icons": "^4.4.0",
     "remix-esbuild-override": "^3.0.4"
   },
   "devDependencies": {
