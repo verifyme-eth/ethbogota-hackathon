@@ -1,12 +1,20 @@
+// BFF elements
 import type { LoaderFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 
-import { Box, Button, Center, HStack, Text } from "@chakra-ui/react";
+import { db } from "~/utils/db.server";
+
+// UI elements
+import { Box, Button, Center, HStack, Icon, Text } from "@chakra-ui/react";
 
 import { Landing } from "~/components/LandingDesktop";
 
-export const loader: LoaderFunction = () => {
-  const verifiedUser = 5;
+import { AiFillCheckCircle } from "react-icons/ai";
+import { MdVisibility } from "react-icons/md";
+
+export const loader: LoaderFunction = async () => {
+  // Get the number of verified users
+  const verifiedUser = await db.verified.count();
 
   return verifiedUser;
 };
@@ -96,29 +104,19 @@ export default function Index() {
               </Center>
 
               <HStack margin={"auto"} paddingTop={5}>
-                {/* <Icon as={VisibilityIcon} margin={5} color="sixth" /> */}
+                <Icon as={MdVisibility} margin={5} color="sixth" />
 
                 <Text color={"grayLetter"} fontSize={"14"} paddingRight={2}>
-                  {/* {t("permission")} */}
-                  permisos
+                  View only permission. We will never do anything withot your
+                  approval
                 </Text>
               </HStack>
 
               <HStack>
-                {/* <Icon as={FavoriteIcon} margin={5} color="sixth" /> */}
+                <Icon as={AiFillCheckCircle} margin={5} color="sixth" />
 
                 <Text color={"grayLetter"} fontSize={"14"}>
-                  {/* {t("trustedBy")} {users} {t("users")} */}
-                  Verified user: {verifiedUser}
-                </Text>
-              </HStack>
-
-              <HStack>
-                {/* <Icon as={VerifiedUserIcon} margin={5} color="sixth" /> */}
-
-                <Text color={"grayLetter"} fontSize={"14"}>
-                  {/* {t("verified")} */}
-                  verificados
+                  We have {verifiedUser} verified users
                 </Text>
               </HStack>
             </Box>
@@ -127,7 +125,8 @@ export default function Index() {
           {/* <MobileConnectWalletModal isOpen={isOpen} onClose={onClose} /> */}
         </Box>
       </Center>
-      <Landing />;
+
+      <Landing />
     </>
   );
 }

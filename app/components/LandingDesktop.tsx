@@ -8,7 +8,11 @@ import gif from "../../public/assets/vme.gif";
 
 function Landing() {
   return (
-    <Flex flexDirection="column" h="calc(100vh)">
+    <Flex
+      flexDirection="column"
+      h="calc(100vh)"
+      display={["none", "block", "block", "block"]}
+    >
       <Flex justifyContent="space-between" h="calc(12vh)" pr="2rem" pl="1rem">
         <Flex p="1rem" dir="column" alignItems="center">
           <Image maxH="4rem" src={logo} alt="logo" />
