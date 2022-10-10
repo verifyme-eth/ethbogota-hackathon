@@ -1,6 +1,6 @@
 // BFF elements
 import type { LoaderFunction } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
 
 import { db } from "~/utils/db.server";
 
@@ -11,6 +11,7 @@ import { Landing } from "~/components/LandingDesktop";
 
 import { AiFillCheckCircle } from "react-icons/ai";
 import { MdVisibility } from "react-icons/md";
+import { FaWallet } from "react-icons/fa";
 
 export const loader: LoaderFunction = async () => {
   // Get the number of verified users
@@ -32,11 +33,11 @@ export default function Index() {
           width={["80%", "80%", "500px"]}
           marginTop={[10, 40, 40]}
         >
-          {/* <Box marginTop={10}>
-          <Center>
-            <WalletIcon width={80} height={80} />
-          </Center>
-        </Box> */}
+          <Box marginTop={10}>
+            <Center>
+              <FaWallet width={80} height={80} />
+            </Center>
+          </Box>
 
           <Center margin={5}>
             <Text
@@ -45,7 +46,7 @@ export default function Index() {
               letterSpacing={"5px"}
               lineHeight={"26.4px"}
             >
-              titulo
+              Social verification in Lens with POAPs
             </Text>
           </Center>
 
@@ -68,39 +69,17 @@ export default function Index() {
               boxShadow="0px 0px 10px rgba(0, 0, 0, 0.1)"
             >
               <Center paddingTop={5}>
-                <Button
-                  bg={"primary"}
-                  color="white"
-                  borderRadius={70}
-                  display={["block", "none", "none"]}
-                  // onClick={onOpen}
-                >
-                  <Text
-                    fontWeight={400}
-                    fontSize={"18px"}
-                    lineHeight={"21.6px"}
-                  >
-                    {/* {t("button")} */}
-                    button
-                  </Text>
-                </Button>
-
-                <Button
-                  bg={"primary"}
-                  color="white"
-                  borderRadius={70}
-                  display={["none", "block", "block"]}
-                  // onClick={login}
-                >
-                  <Text
-                    fontWeight={400}
-                    fontSize={"18px"}
-                    lineHeight={"21.6px"}
-                  >
-                    {/* {t("button")} */}
-                    button
-                  </Text>
-                </Button>
+                <Link to="/login">
+                  <Button bg={"first"} color="white" borderRadius={70}>
+                    <Text
+                      fontWeight={400}
+                      fontSize={"18px"}
+                      lineHeight={"21.6px"}
+                    >
+                      Connect your wallet
+                    </Text>
+                  </Button>
+                </Link>
               </Center>
 
               <HStack margin={"auto"} paddingTop={5}>

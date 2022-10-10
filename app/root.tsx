@@ -18,10 +18,9 @@ import { theme } from "./style/theme";
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
-  title: "New Remix App",
+  title: "Verify me ! | ETHBogota 2022",
   viewport: "width=device-width,initial-scale=1",
 });
-
 export let links: LinksFunction = () => {
   return [
     { rel: "preconnect", href: "https://fonts.googleapis.com" },
