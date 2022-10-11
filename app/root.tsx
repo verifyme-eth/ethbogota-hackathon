@@ -2,6 +2,11 @@
 import React, { useContext, useEffect } from "react";
 import { withEmotionCache } from "@emotion/react";
 
+import "@fontsource/montserrat/400.css";
+import "@fontsource/montserrat/500.css";
+import "@fontsource/montserrat/600.css";
+import "@fontsource/montserrat/700.css";
+
 import { ChakraProvider } from "@chakra-ui/react";
 
 import {
@@ -29,7 +34,7 @@ export let links: LinksFunction = () => {
     { rel: "preconnect", href: "https://fonts.gstatic.com" },
     {
       rel: "stylesheet",
-      href: "https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap",
+      href: "https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap",
     },
   ];
 };

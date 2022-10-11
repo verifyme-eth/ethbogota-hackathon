@@ -1,8 +1,13 @@
 // BFF elements
 import type { LoaderFunction } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData, useSubmit } from "@remix-run/react";
 
 import { db } from "~/utils/db.server";
+
+import WalletConnect from "@walletconnect/client";
+import QRCodeModal from "@walletconnect/qrcode-modal";
+
+import { subscribeToEvents } from "~/web3/wallet-connect";
 
 // UI elements
 import {
@@ -18,6 +23,7 @@ import {
 
 import { AiFillCheckCircle } from "react-icons/ai";
 import { MdVisibility } from "react-icons/md";
+import { BsPlusLg } from "react-icons/bs";
 
 // Components
 import { Landing } from "~/components/LandingDesktop";
@@ -32,10 +38,58 @@ export const loader: LoaderFunction = async () => {
 
 export default function Index() {
   const verifiedUser = useLoaderData();
+  const submit = useSubmit();
+
+  const handleLoginWalletConnect = async () => {
+    console.log(
+      "[browser][handleLoginWalletConnect] Waiting connection with walletConnect ..."
+    );
+
+    // bridge url
+    const bridge = "https://bridge.walletconnect.org";
+
+    // create new connector
+    const connector: WalletConnect = new WalletConnect({
+      bridge, // Required
+      qrcodeModal: QRCodeModal,
+    });
+
+    // check if already connected
+    if (!connector.connected) {
+      console.log("[browser][handleLoginWalletConnect] Creating session ...");
+      // create new session
+      await connector.createSession();
+    } else {
+      console.log("[browser][handleLoginWalletConnect] connector:", connector);
+
+      const address = connector.accounts[0];
+
+      console.log("[browser][handleLoginWalletConnect] address:", address);
+
+      const formData = new FormData();
+
+      formData.append("address", address);
+      formData.append("connected", "true");
+
+      submit(formData, {
+        action: "/login/?index",
+        method: "post",
+        encType: "application/x-www-form-urlencoded",
+        replace: true,
+      });
+    }
+
+    // subscribe to events and submit form
+    subscribeToEvents(connector, submit);
+  };
 
   return (
     <>
       <Hide above="sm">
+        <Center mt="5">
+          <Img src="./assets/verify-me.png" w={24} h={24} />
+        </Center>
+
         <Center>
           <Box
             bg={"white"}
@@ -47,8 +101,8 @@ export default function Index() {
               <Text
                 textAlign="center"
                 fontWeight={700}
-                fontSize={"28"}
-                lineHeight={"34.13px"}
+                fontSize={"25"}
+                lineHeight={"30px"}
               >
                 Social verification in{" "}
                 <Text as="span" color="lensDark">
@@ -61,15 +115,17 @@ export default function Index() {
               </Text>
             </Center>
 
-            <Center mt="10">
+            <Center mt="5">
               <HStack>
-                <Img src="./assets/poap-logo.png" />
+                <Img src="./assets/poap-logo.png" w={20} h={24} />
 
-                <Img src="./assets/lens-logo.png" />
+                <Icon as={BsPlusLg} color="lensDark" />
+
+                <Img src="./assets/lens-logo.png" w={20} h={24} />
               </HStack>
             </Center>
 
-            <Center marginTop={20}>
+            <Center mt="12">
               <Box
                 width={"100%"}
                 borderRadius={20}
@@ -77,9 +133,15 @@ export default function Index() {
               >
                 <Center paddingTop={5}>
                   <Link to="/login">
-                    <Button bg="lensDark" color="white" borderRadius={70}>
+                    <Button
+                      bgGradient="linear(to-l, poapDark, pink.500)"
+                      color="white"
+                      borderRadius={"70px"}
+                      boxShadow="0px 2px 3px rgba(0, 0, 0, 0.15)"
+                      onClick={handleLoginWalletConnect}
+                    >
                       <Text
-                        fontWeight={400}
+                        fontWeight={500}
                         fontSize={"18px"}
                         lineHeight={"21.6px"}
                       >
@@ -90,20 +152,37 @@ export default function Index() {
                 </Center>
 
                 <HStack margin={"auto"} paddingTop={5}>
-                  <Icon as={MdVisibility} margin={5} color="sixth" />
+                  <Icon
+                    as={MdVisibility}
+                    margin={5}
+                    color="poapDark"
+                    w={8}
+                    h={8}
+                  />
 
-                  <Text color={"grayLetter"} fontSize={"14"} paddingRight={2}>
+                  <Text color={"grayLetter"} fontSize={"14"} paddingRight={5}>
                     View only permission. We will never do anything withot your
                     approval
                   </Text>
                 </HStack>
 
                 <HStack>
-                  <Icon as={AiFillCheckCircle} margin={5} color="sixth" />
+                  <Icon
+                    as={AiFillCheckCircle}
+                    margin={5}
+                    color="lensDark"
+                    w={8}
+                    h={8}
+                  />
 
                   <Text color={"grayLetter"} fontSize={"14"}>
                     We already verified {verifiedUser}{" "}
-                    <Text as="span" color="lensDark" fontWeight="bold">
+                    <Text
+                      as="span"
+                      bgGradient="linear(to-l, gradient1, gradient2)"
+                      bgClip="text"
+                      fontWeight="bold"
+                    >
                       frens
                     </Text>
                   </Text>

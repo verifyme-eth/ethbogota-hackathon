@@ -11,7 +11,12 @@ export default function Footer() {
       bottom={0}
       position={"fixed"}
     >
-      <Text padding={3} color={"grayLetter"}>
+      <Text
+        padding={3}
+        color={"grayLetter"}
+        fontWeight="light"
+        fontSize={"16px"}
+      >
         Verify me ! ©. All rights reserved
       </Text>
     </Flex>
