@@ -7,6 +7,8 @@ import {
   useTransition,
 } from "@remix-run/react";
 
+import { FaArrowLeft } from "react-icons/fa";
+
 import { GraphQLClient } from "graphql-request";
 
 import { GetProfile } from "~/web3/lens";
@@ -423,5 +425,57 @@ export default function Profile() {
         </Box>
       )}
     </Box>
+  );
+}
+
+export function ErrorBoundary({ error }: any) {
+  return (
+    <Flex
+      h="calc(100vh)"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="space-evenly"
+    >
+      <Flex
+        minH="calc(8vh)"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="space-around"
+      >
+        <Text fontWeight={600} fontSize={"25px"} lineHeight={"21.6px"}>
+          Are you sure you have
+        </Text>
+        <Text fontWeight={600} fontSize={"25px"} lineHeight={"21.6px"}>
+          a{" "}
+          <Text as="span" color="">
+            Lens
+          </Text>{" "}
+          profile?
+        </Text>
+      </Flex>
+      <Image maxH="calc(35vh)" src="./assets/sad-lens.png" />
+      <Box pb="3rem">
+        <Button
+          minH="1rem"
+          minW="10rem"
+          bg="lens"
+          color="white"
+          borderRadius={30}
+        >
+          <Flex alignItems="center">
+            <Icon color="black" as={FaArrowLeft} />
+            <Text
+              color="black"
+              fontWeight={700}
+              fontSize={"15px"}
+              lineHeight={"21.6px"}
+              pl="0.8rem"
+            >
+              Go home
+            </Text>
+          </Flex>
+        </Button>
+      </Box>
+    </Flex>
   );
 }
