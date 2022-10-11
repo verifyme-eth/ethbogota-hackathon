@@ -115,7 +115,7 @@ export const action: ActionFunction = async ({ request }) => {
 
   const session = await getSession(request.headers.get("Cookie"));
 
-  return redirect(`/login`, {
+  return redirect(`/`, {
     headers: {
       "Set-Cookie": await destroySession(session),
     },
@@ -266,7 +266,7 @@ export default function Dashboard() {
               </Box>
 
               <Button onClick={handleSearch}>
-                <Icon fontSize="4xl" color="green.800" as={AiOutlineSearch} />
+                <Icon fontSize="4xl" color="gradient1" as={AiOutlineSearch} />
               </Button>
             </HStack>
           </Box>

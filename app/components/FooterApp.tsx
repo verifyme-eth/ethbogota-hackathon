@@ -15,7 +15,7 @@ export default function Footer() {
         padding={3}
         color={"grayLetter"}
         fontWeight="light"
-        fontSize={"16px"}
+        fontSize={"12px"}
       >
         Verify me ! ©. All rights reserved
       </Text>
