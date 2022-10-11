@@ -10,5 +10,6 @@ export const theme = extendTheme({
     second: "#3A86FF",
     third: "#FCAF17",
     lensDark: "#00501E",
+    poap: "#F5CFD3",
   },
 });

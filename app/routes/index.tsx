@@ -12,14 +12,15 @@ import {
   Hide,
   HStack,
   Icon,
+  Img,
   Text,
 } from "@chakra-ui/react";
 
-import { Landing } from "~/components/LandingDesktop";
-
 import { AiFillCheckCircle } from "react-icons/ai";
 import { MdVisibility } from "react-icons/md";
-import { FaWallet } from "react-icons/fa";
+
+// Components
+import { Landing } from "~/components/LandingDesktop";
 import Footer from "~/components/FooterApp";
 
 export const loader: LoaderFunction = async () => {
@@ -41,38 +42,34 @@ export default function Index() {
             borderRadius={15}
             height={["300px", "356px", "356px"]}
             width={["80%", "80%", "500px"]}
-            marginTop={[10, 40, 40]}
           >
-            <Box marginTop={10}>
-              <Center>
-                <FaWallet width={80} height={80} />
-              </Center>
-            </Box>
-
             <Center margin={5}>
               <Text
+                textAlign="center"
                 fontWeight={700}
-                fontSize={"22"}
-                letterSpacing={"5px"}
-                lineHeight={"26.4px"}
+                fontSize={"28"}
+                lineHeight={"34.13px"}
               >
-                Social verification in Lens with POAPs
+                Social verification in{" "}
+                <Text as="span" color="lensDark">
+                  Lens Protocol
+                </Text>{" "}
+                with{" "}
+                <Text as="span" color="poap">
+                  POAPs
+                </Text>
               </Text>
             </Center>
 
-            <Center margin={5}>
-              <Text
-                fontWeight={400}
-                fontSize={"18"}
-                lineHeight={"21.6px"}
-                color="grayLetter"
-                textAlign={"center"}
-              >
-                subtitulo
-              </Text>
+            <Center mt="10">
+              <HStack>
+                <Img src="./assets/poap-logo.png" />
+
+                <Img src="./assets/lens-logo.png" />
+              </HStack>
             </Center>
 
-            <Center marginTop={5}>
+            <Center marginTop={20}>
               <Box
                 width={"100%"}
                 borderRadius={20}
@@ -80,7 +77,7 @@ export default function Index() {
               >
                 <Center paddingTop={5}>
                   <Link to="/login">
-                    <Button bg={"first"} color="white" borderRadius={70}>
+                    <Button bg="lensDark" color="white" borderRadius={70}>
                       <Text
                         fontWeight={400}
                         fontSize={"18px"}
