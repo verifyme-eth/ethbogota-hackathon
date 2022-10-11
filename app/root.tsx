@@ -28,7 +28,7 @@ export const meta: MetaFunction = () => ({
   title: "Verify me ! | ETHBogota 2022",
   viewport: "width=device-width,initial-scale=1",
   "og:description": "Verify your identity in lens protocol using POAP",
-  "og:image": "./assets/portada.png",
+  "og:image": "./assets/PortadaOficial.png",
 });
 
 export let links: LinksFunction = () => {
