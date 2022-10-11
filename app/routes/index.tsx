@@ -208,8 +208,14 @@ export default function Index() {
 
             {transition.state === "loading" && (
               <Box>
-                <Text textAlign="center" fontSize="26px" color="lensDark">
-                  Connecting with garden
+                <Text
+                  textAlign="center"
+                  fontWeight={700}
+                  fontSize={"25"}
+                  lineHeight={"30px"}
+                  color="lensDark"
+                >
+                  Connecting with garden ...
                 </Text>
 
                 <Center>
