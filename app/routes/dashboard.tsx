@@ -29,10 +29,11 @@ import {
   Divider,
   Icon,
   Button,
+  Img,
 } from "@chakra-ui/react";
 
 import { AiOutlineSearch } from "react-icons/ai";
-import { BsPlus } from "react-icons/bs";
+import { BsPlusLg } from "react-icons/bs";
 
 import React from "react";
 import { getRatioValidation } from "~/web3/verify-me";
@@ -166,13 +167,12 @@ export default function Dashboard() {
         <>
           <Box>
             <HStack>
-              <Box px={5}>
+              <Box px={5} w="70%">
                 <Text fontSize="20px" fontWeight="bold" color="black">
                   {profile?.name}
                 </Text>
 
                 <Text
-                  textAlign="center"
                   fontSize="15px"
                   fontWeight="bold"
                   bgGradient="linear(to-l, gradient1, gradient2)"
@@ -357,26 +357,26 @@ export default function Dashboard() {
 
       {transition.state === "loading" && (
         // {true && (
-        <Box mt="-80px">
-          <Text textAlign="center" fontSize="26px" color="lensDark" mt="25px">
-            Joining Lens protocol with POAPs
+        <Box mt="80px" p="10">
+          <Text
+            textAlign="center"
+            fontSize={"25"}
+            fontWeight="700"
+            lineHeight="30px"
+            color="lensDark"
+          >
+            Validating Lens protocol with POAPs
           </Text>
 
-          <Flex justifyContent="center">
-            <Box mt="20px" width="40%" height="40%">
-              <Image src="./assets/LENS LOGO__Lens_ icon.png" />
-            </Box>
+          <Center mt="5">
+            <HStack>
+              <Img src="./assets/poap-logo.png" w={14} />
 
-            <Icon fontSize="4xl" color="lensDark" as={BsPlus} m="auto" />
+              <Icon as={BsPlusLg} color="lensDark" />
 
-            <Box mt="28px" width="40%" height="40%">
-              <Image
-                src="https://www.niftytable.com/content/images/2021/09/v2-jzTZE9PtJ8Mmvqe_qnjc4DMzhJmNtBkdALWAtyjc.jpg "
-                width="80%"
-                height="80%"
-              />
-            </Box>
-          </Flex>
+              <Img src="./assets/lens-logo.png" w={14} />
+            </HStack>
+          </Center>
 
           <Center mt="50px">
             <CircularProgress color="lensDark" isIndeterminate />
