@@ -30,6 +30,7 @@ import {
   Icon,
   Button,
   Img,
+  Link as ChakraLink,
 } from "@chakra-ui/react";
 
 import { AiOutlineSearch } from "react-icons/ai";
@@ -408,7 +409,7 @@ export function ErrorBoundary({ error }: any) {
       </Flex>
       <Image maxH="calc(50vh)" src="./assets/lens-light-green.png" />
 
-      <Link to="https://lenster.xyz/">
+      <ChakraLink href="https://lenster.xyz/">
         <Button
           minH="4rem"
           minW="20rem"
@@ -423,7 +424,7 @@ export function ErrorBoundary({ error }: any) {
             </Text>
           </Flex>
         </Button>
-      </Link>
+      </ChakraLink>
     </Flex>
   );
 }

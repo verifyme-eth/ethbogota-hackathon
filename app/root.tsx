@@ -27,7 +27,7 @@ export const meta: MetaFunction = () => ({
   charset: "utf-8",
   title: "Verify me ! | ETHBogota 2022",
   viewport: "width=device-width,initial-scale=1",
-  "og:description": "Verify your identity in lens protocol using POAP",
+  "og:description": "Verify your identity in Lens protocol using POAP",
   "og:image": "./assets/PortadaOficial.png",
 });
 
