@@ -27,7 +27,9 @@ export const meta: MetaFunction = () => ({
   charset: "utf-8",
   title: "Verify me ! | ETHBogota 2022",
   viewport: "width=device-width,initial-scale=1",
+  description: "Verify me ! | ETHBogota 2022",
 });
+
 export let links: LinksFunction = () => {
   return [
     { rel: "preconnect", href: "https://fonts.googleapis.com" },
