@@ -1,6 +1,7 @@
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import {
+  Button,
   Link,
   useLoaderData,
   useSubmit,
@@ -62,6 +63,10 @@ export const loader: LoaderFunction = async ({ request }) => {
   const responseProfile = await lens.request(GetDefaultProfile, variables);
 
   const profile = responseProfile.defaultProfile;
+
+  if (!profile) {
+    throw new Error("Please sign with Lens");
+  }
 
   // Get if user is verified
   const verified = await db.verified.findUnique({
@@ -195,7 +200,7 @@ export default function Dashboard() {
                   <CircularProgress
                     value={getRatioValidation(
                       indexVm,
-                      profile.stats.totalFollowers
+                      profile?.stats.totalFollowers
                     )}
                     size="150px"
                     color="#71AA43"
@@ -384,6 +389,19 @@ export default function Dashboard() {
           </Center>
         </Box>
       )}
+    </Box>
+  );
+}
+
+export function ErrorBoundary({ error }: any) {
+  return (
+    <Box>
+      <Text>{error.message}</Text>
+      <Button bg="lensDark" color="white" borderRadius={70}>
+        <Text fontWeight={400} fontSize={"18px"} lineHeight={"21.6px"}>
+          Connect your wallet
+        </Text>
+      </Button>
     </Box>
   );
 }

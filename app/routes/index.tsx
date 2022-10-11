@@ -101,11 +101,9 @@ export default function Index() {
                 <HStack>
                   <Icon as={AiFillCheckCircle} margin={5} color="sixth" />
 
-                  <Text color={"grayLetter"} fontSize={"14"}>
-                    We already verified {verifiedUser}{" "}
-                    <Text as="span" color="lensDark" fontWeight="bold">
-                      frens
-                    </Text>
+                  <Text color={"grayLetter"} fontSize={"14"} paddingRight={2}>
+                    There are currently {verifiedUser} frens verifying in Lens,
+                    join us!
                   </Text>
                 </HStack>
               </Box>
