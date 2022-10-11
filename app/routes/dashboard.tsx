@@ -1,7 +1,6 @@
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import {
-  Button,
   Link,
   useLoaderData,
   useSubmit,
@@ -30,6 +29,7 @@ import {
   Divider,
   Button,
   Icon,
+  Spacer,
 } from "@chakra-ui/react";
 
 import { AiOutlineSearch } from "react-icons/ai";
@@ -65,7 +65,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   const profile = responseProfile.defaultProfile;
 
   if (!profile) {
-    throw new Error("Please sign with Lens");
+    throw new Error();
   }
 
   // Get if user is verified
@@ -395,13 +395,38 @@ export default function Dashboard() {
 
 export function ErrorBoundary({ error }: any) {
   return (
-    <Box>
-      <Text>{error.message}</Text>
-      <Button bg="lensDark" color="white" borderRadius={70}>
-        <Text fontWeight={400} fontSize={"18px"} lineHeight={"21.6px"}>
-          Connect your wallet
+    <Flex
+      h="calc(100vh)"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="space-evenly"
+    >
+      <Flex flexDirection="column" alignItems="center">
+        <Text fontWeight={600} fontSize={"25px"} lineHeight={"21.6px"}>
+          Connect your profile
         </Text>
+        <Text fontWeight={600} fontSize={"25px"} lineHeight={"21.6px"}>
+          with{" "}
+          <Text as="span" color="">
+            Lens
+          </Text>
+        </Text>
+      </Flex>
+      <Image maxH="calc(50vh)" src="./assets/lens-light-green.png" />
+      <Button
+        minH="4rem"
+        minW="20rem"
+        bg="lensDark"
+        color="white"
+        borderRadius={30}
+      >
+        <Flex alignItems="center">
+          <Image src="./assets/grey-logo.png" pr="1rem" />
+          <Text fontWeight={400} fontSize={"25px"} lineHeight={"21.6px"}>
+            Lens Connect
+          </Text>
+        </Flex>
       </Button>
-    </Box>
+    </Flex>
   );
 }
