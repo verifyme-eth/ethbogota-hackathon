@@ -1,7 +1,6 @@
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import {
-  Button,
   Link,
   useLoaderData,
   useSubmit,
@@ -28,8 +27,8 @@ import {
   CircularProgress,
   Input,
   Divider,
-  Button,
   Icon,
+  Button,
 } from "@chakra-ui/react";
 
 import { AiOutlineSearch } from "react-icons/ai";
@@ -163,47 +162,35 @@ export default function Dashboard() {
 
   return (
     <Box>
-      <Box pt={10}>
-        <Center>
-          <Box boxSize="140px">
-            <Image src="./assets/LogoCompleto.png" />
-          </Box>
-        </Center>
-      </Box>
-
       {transition.state === "idle" && (
-        // {false && (
         <>
-          <Box mt="-80px">
+          <Box>
             <HStack>
-              <Box px={20} backgroundColor="#FEDFA2">
-                <Text
-                  textAlign="center"
-                  fontSize="20px"
-                  fontWeight="bold"
-                  color="black"
-                >
+              <Box px={5}>
+                <Text fontSize="20px" fontWeight="bold" color="black">
                   {profile?.name}
                 </Text>
+
                 <Text
                   textAlign="center"
                   fontSize="15px"
-                  fontWeight="600"
-                  color="#767676"
+                  fontWeight="bold"
+                  bgGradient="linear(to-l, gradient1, gradient2)"
+                  bgClip="text"
                 >
                   @{profile?.handle}
                 </Text>
               </Box>
 
               <Box>
-                <Box position="relative" display="inline-flex" ml="-60px">
+                <Box position="relative" display="inline-flex" ml="0px">
                   <CircularProgress
                     value={getRatioValidation(
                       indexVm,
                       profile?.stats.totalFollowers
                     )}
                     size="150px"
-                    color="#71AA43"
+                    color="gradient1"
                     thickness="8px"
                   />
                   <Box
@@ -244,6 +231,7 @@ export default function Dashboard() {
                 >
                   {profile?.stats.totalFollowers}
                 </Text>
+
                 <Text fontSize="16px" fontWeight="bold" color="#6F6F6F">
                   Followers
                 </Text>
@@ -310,7 +298,12 @@ export default function Dashboard() {
                   <Link to={`/${post.profile?.handle}`} prefetch="intent">
                     <Stack>
                       <Text>{post.profile.name}</Text>
-                      <Text color="green" fontSize="sm">
+                      <Text
+                        bgGradient="linear(to-l, gradient1, gradient2)"
+                        bgClip="text"
+                        fontSize="sm"
+                        fontWeight="600"
+                      >
                         @{post.profile.handle}
                       </Text>
                     </Stack>
@@ -340,16 +333,17 @@ export default function Dashboard() {
 
           <Center onClick={handleLogout}>
             <Box
-              bg="third"
+              bgGradient="linear(to-l, poapDark, pink.500)"
               roundedTop="30px"
               bottom="0"
               position="fixed"
-              width="90%"
+              width="80%"
               height="50px"
               my="auto"
             >
               <Text
                 textAlign="center"
+                color="white"
                 fontSize="20px"
                 fontWeight="bold"
                 pt="8px"

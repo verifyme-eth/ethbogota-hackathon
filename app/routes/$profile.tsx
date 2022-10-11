@@ -271,6 +271,7 @@ export default function Profile() {
                   >
                     {userProfile.stats.totalFollowing}
                   </Text>
+
                   <Text fontSize="16px" fontWeight="bold" color="#6F6F6F">
                     Following
                   </Text>

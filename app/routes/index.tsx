@@ -94,7 +94,7 @@ export default function Index() {
     <>
       <Hide above="sm">
         <Center mt="5">
-          <Img src="./assets/verify-me.png" w={24} h={24} />
+          <Img src="./assets/verrifyme-logo.png" w={24} h={24} />
         </Center>
 
         <Center>
