@@ -176,15 +176,16 @@ export default function Index() {
                   />
 
                   <Text color={"grayLetter"} fontSize={"14"}>
-                    We already verified {verifiedUser}{" "}
+                    There are currently{" "}
                     <Text
                       as="span"
                       bgGradient="linear(to-l, gradient1, gradient2)"
                       bgClip="text"
                       fontWeight="bold"
                     >
-                      frens
+                      {verifiedUser}{" "}
                     </Text>
+                    frens verifying in Lens, join us!
                   </Text>
                 </HStack>
               </Box>
