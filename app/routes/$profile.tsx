@@ -197,11 +197,7 @@ export default function Profile() {
 
       {transition.state === "idle" && (
         <>
-          <Box
-            backgroundColor="#FEE7B9"
-            borderTopLeftRadius="30"
-            borderTopRightRadius="30"
-          >
+          <Box>
             <Center mt="60px">
               <Flex mt="-60px">
                 <Box mt="70px" mr="20px">
@@ -223,7 +219,7 @@ export default function Profile() {
                     <CircularProgress
                       value={indexVm}
                       size="150px"
-                      color="#71AA43"
+                      color="gradient1"
                       thickness="8px"
                     />
                   )}
@@ -232,7 +228,7 @@ export default function Profile() {
                     <CircularProgress
                       value={indexVm + arrLength}
                       size="150px"
-                      color="#71AA43"
+                      color="gradient1"
                       thickness="8px"
                     />
                   )}
@@ -292,8 +288,9 @@ export default function Profile() {
               <Text
                 textAlign="center"
                 fontSize="15px"
-                fontWeight="light"
-                color="#767676"
+                fontWeight="bold"
+                bgGradient="linear(to-l, gradient1, gradient2)"
+                bgClip="text"
                 pb="2"
               >
                 @{userProfile.handle}
@@ -301,28 +298,49 @@ export default function Profile() {
             </Box>
           </Box>
 
-          <Divider borderWidth={2} />
+          <Center>
+            <Divider borderWidth={1} width="80%" />
+          </Center>
 
-          <HStack pl="45px">
-            <Text fontSize="16px" fontWeight="light" color="#666666">
-              Shared Poaps
-            </Text>
+          <Center pt="5">
+            <HStack justifyItems={"center"}>
+              <Text fontSize="16px" fontWeight="light" color="#666666">
+                Shared Poaps
+              </Text>
 
-            <Img
-              src="https://www.niftytable.com/content/images/2021/09/v2-jzTZE9PtJ8Mmvqe_qnjc4DMzhJmNtBkdALWAtyjc.jpg "
-              width="20%"
-              height="20%"
-            />
-          </HStack>
+              <Img src="./assets/poap-logo.png" w={10} />
+            </HStack>
+          </Center>
 
           <PoapContainer arr={common} length={arrLength} diff={arrDiff} />
 
-          <Box
-            backgroundColor="#FEE7B9"
-            borderBottomLeftRadius="30"
-            borderBottomRightRadius="30"
-            mt="3"
-          >
+          {common.length === 0 && (
+            <>
+              <Text
+                textAlign="center"
+                fontSize="18px"
+                fontWeight="bold"
+                color="#666666"
+              >
+                Nothing here
+              </Text>
+
+              <Text
+                textAlign="center"
+                fontSize="14px"
+                fontWeight="light"
+                color="#666666"
+              >
+                You should share a POAP with this user
+              </Text>
+            </>
+          )}
+
+          <Center mt="5">
+            <Divider borderWidth={1} width="80%" />
+          </Center>
+
+          <Box mt="3">
             {!transition.submission && (
               <>
                 {!verifiedForUser ? (
@@ -342,30 +360,30 @@ export default function Profile() {
                       </Text>
 
                       <Button
-                        bg="white"
+                        bgGradient="linear(to-l, poapDark, pink.500)"
+                        color="white"
+                        borderRadius={"70px"}
                         boxShadow="0px 2px 3px rgba(0, 0, 0, 0.15)"
-                        borderRadius="70px"
-                        width="100px"
                         mb="2"
                         onClick={handleVerify}
                       >
                         <Text
                           fontSize="12px"
                           fontWeight="extrabold"
-                          color="#black"
+                          color="white"
                         >
                           Verify
                         </Text>
                       </Button>
                     </Box>
 
-                    <Center>
-                      <Img
-                        src="./assets/notverified.png"
-                        width="50%"
-                        height="50%"
-                      />
-                    </Center>
+                    <Img
+                      src="./assets/not-verificado-logo.png"
+                      w={20}
+                      pr="20px"
+                      // width="50%"
+                      // height="50%"
+                    />
                   </HStack>
                 ) : (
                   <HStack>
@@ -380,13 +398,7 @@ export default function Profile() {
                       </Text>
                     </Box>
 
-                    <Center>
-                      <Img
-                        src="./assets/verified.png"
-                        width="50%"
-                        height="50%"
-                      />
-                    </Center>
+                    <Img src="./assets/verificado-logo.png" w={20} pr="20px" />
                   </HStack>
                 )}
               </>
@@ -401,7 +413,7 @@ export default function Profile() {
                 </Box>
 
                 <Center>
-                  <Img src="./assets/verified.png" width="50%" height="50%" />
+                  <Img src="./assets/not-verificado-logo.png" />
                 </Center>
               </HStack>
             )}
@@ -410,9 +422,15 @@ export default function Profile() {
       )}
 
       {transition.state === "loading" && (
-        <Box>
-          <Text textAlign="center" fontSize="26px" color="lensDark" mt="25px">
-            Connecting with garden
+        <Box mt="10">
+          <Text
+            textAlign="center"
+            fontWeight={700}
+            fontSize={"25"}
+            lineHeight={"30px"}
+            color="lensDark"
+          >
+            Connecting with garden ...
           </Text>
 
           <Center>
