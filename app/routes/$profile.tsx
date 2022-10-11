@@ -464,14 +464,16 @@ export function ErrorBoundary({ error }: any) {
           Are you sure you have
         </Text>
         <Text fontWeight={600} fontSize={"25px"} lineHeight={"21.6px"}>
-          a{" "}
-          <Text as="span" color="">
+          the right{" "}
+          <Text as="span" color="lensDark">
             Lens
           </Text>{" "}
           profile?
         </Text>
       </Flex>
-      <Image maxH="calc(35vh)" src="./assets/sad-lens.png" />
+
+      <Image maxH="calc(25vh)" src="./assets/sad-lens.png" />
+
       <Box pb="3rem">
         <Button
           minH="1rem"
@@ -480,18 +482,20 @@ export function ErrorBoundary({ error }: any) {
           color="white"
           borderRadius={30}
         >
-          <Flex alignItems="center">
-            <Icon color="black" as={FaArrowLeft} />
-            <Text
-              color="black"
-              fontWeight={700}
-              fontSize={"15px"}
-              lineHeight={"21.6px"}
-              pl="0.8rem"
-            >
-              Go home
-            </Text>
-          </Flex>
+          <Link to="/dashboard">
+            <Flex alignItems="center">
+              <Icon color="black" as={FaArrowLeft} />
+              <Text
+                color="black"
+                fontWeight={700}
+                fontSize={"15px"}
+                lineHeight={"21.6px"}
+                pl="0.8rem"
+              >
+                Go home
+              </Text>
+            </Flex>
+          </Link>
         </Button>
       </Box>
     </Flex>

@@ -368,7 +368,7 @@ export default function Dashboard() {
             Validating Lens protocol with POAPs
           </Text>
 
-          <Center mt="5">
+          <Center mt="20">
             <HStack>
               <Img src="./assets/poap-logo.png" w={14} />
 
@@ -401,26 +401,29 @@ export function ErrorBoundary({ error }: any) {
         </Text>
         <Text fontWeight={600} fontSize={"25px"} lineHeight={"21.6px"}>
           with{" "}
-          <Text as="span" color="">
+          <Text as="span" color="lensDark" fontWeight={700}>
             Lens
           </Text>
         </Text>
       </Flex>
       <Image maxH="calc(50vh)" src="./assets/lens-light-green.png" />
-      <Button
-        minH="4rem"
-        minW="20rem"
-        bg="lensDark"
-        color="white"
-        borderRadius={30}
-      >
-        <Flex alignItems="center">
-          <Image src="./assets/grey-logo.png" pr="1rem" />
-          <Text fontWeight={400} fontSize={"25px"} lineHeight={"21.6px"}>
-            Lens Connect
-          </Text>
-        </Flex>
-      </Button>
+
+      <Link to="https://lenster.xyz/">
+        <Button
+          minH="4rem"
+          minW="20rem"
+          bg="lensDark"
+          color="white"
+          borderRadius={30}
+        >
+          <Flex alignItems="center">
+            <Image src="./assets/grey-logo.png" pr="1rem" />
+            <Text fontWeight={400} fontSize={"25px"} lineHeight={"21.6px"}>
+              Lens Connect
+            </Text>
+          </Flex>
+        </Button>
+      </Link>
     </Flex>
   );
 }
