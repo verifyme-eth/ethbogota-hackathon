@@ -12,7 +12,7 @@ export default function PoapContainer({
   diff,
 }: PoapContainerProps) {
   return (
-    <Box p="4">
+    <Box p="2">
       <SimpleGrid columns={4} spacing="1rem">
         {length > 11 ? (
           <>

@@ -7,7 +7,7 @@ import {
   useTransition,
 } from "@remix-run/react";
 
-import { FaArrowLeft } from "react-icons/fa";
+import { AiFillHome } from "react-icons/ai";
 
 import { GraphQLClient } from "graphql-request";
 
@@ -36,8 +36,6 @@ import {
 
 import PoapContainer from "~/components/PoapContainer";
 
-import { BiLogOutCircle } from "react-icons/bi";
-
 export const loader: LoaderFunction = async ({ params, request }) => {
   // Get address from cookie session
   const session = await getSession(request.headers.get("Cookie"));
@@ -54,8 +52,6 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   const response = await lens.request(GetProfile, variables);
 
   const userProfile = response.profile;
-
-  console.log(userProfile);
 
   // Get poaps shared
   const { common, arrLength, arrDiff } = await comparePoaps(
@@ -187,20 +183,12 @@ export default function Profile() {
       action: `${userProfile.handle}/?index`,
       method: "post",
       encType: "application/x-www-form-urlencoded",
-      replace: true,
+      // replace: true,
     });
   };
 
-  console.log(userProfile);
-
   return (
     <Box pt="20px">
-      <Link to={"/dashboard"}>
-        <Box left="0" position="fixed" height="50px" width="40px">
-          <Icon fontSize="4xl" color="lensDark" as={BiLogOutCircle} />
-        </Box>
-      </Link>
-
       {transition.state === "idle" && (
         <>
           <Box>
@@ -221,23 +209,12 @@ export default function Profile() {
                 </Box>
 
                 <Box position="relative" display="inline-flex">
-                  {!transition.submission && (
-                    <CircularProgress
-                      value={indexVm}
-                      size="150px"
-                      color="gradient1"
-                      thickness="8px"
-                    />
-                  )}
-
-                  {transition.submission && (
-                    <CircularProgress
-                      value={indexVm + arrLength}
-                      size="150px"
-                      color="gradient1"
-                      thickness="8px"
-                    />
-                  )}
+                  <CircularProgress
+                    value={indexVm}
+                    size="150px"
+                    color="gradient1"
+                    thickness="8px"
+                  />
 
                   <Box
                     top={0}
@@ -274,6 +251,7 @@ export default function Profile() {
                       )}
                   </Box>
                 </Box>
+
                 <Box mt="70px" ml="20px">
                   <Text
                     textAlign="center"
@@ -291,7 +269,7 @@ export default function Profile() {
               </Flex>
             </Center>
 
-            <Box mt="20px">
+            <Box>
               <Text
                 textAlign="center"
                 fontSize="30px"
@@ -318,7 +296,7 @@ export default function Profile() {
             <Divider borderWidth={1} width="80%" />
           </Center>
 
-          <Center pt="5">
+          <Center pt="2">
             <HStack justifyItems={"center"}>
               <Text fontSize="16px" fontWeight="light" color="#666666">
                 Shared Poaps
@@ -357,68 +335,34 @@ export default function Profile() {
           </Center>
 
           <Box mt="3">
-            {!transition.submission && (
-              <>
-                {!verifiedForUser ? (
-                  <HStack>
-                    <Box width="50%" m="auto" pt="4">
-                      <Text fontSize="20px" fontWeight="bold" color="#7E7E7E">
-                        {userProfile.name}
-                      </Text>
+            {!verifiedForUser ? (
+              <HStack>
+                <Box width="50%" m="auto" pt="4">
+                  <Text fontSize="20px" fontWeight="bold" color="#7E7E7E">
+                    {userProfile.name}
+                  </Text>
 
-                      <Text
-                        fontSize="12px"
-                        fontWeight="bold"
-                        color="#7E7E7E"
-                        p="1"
-                      >
-                        needs your verification
-                      </Text>
+                  <Text fontSize="12px" fontWeight="bold" color="#7E7E7E" p="1">
+                    needs your verification
+                  </Text>
 
-                      <Button
-                        bgGradient="linear(to-l, poapDark, pink.500)"
-                        color="white"
-                        borderRadius={"70px"}
-                        boxShadow="0px 2px 3px rgba(0, 0, 0, 0.15)"
-                        mb="2"
-                        onClick={handleVerify}
-                      >
-                        <Text
-                          fontSize="12px"
-                          fontWeight="extrabold"
-                          color="white"
-                        >
-                          Verify
-                        </Text>
-                      </Button>
-                    </Box>
+                  <Button
+                    bgGradient="linear(to-l, poapDark, pink.500)"
+                    color="white"
+                    borderRadius={"70px"}
+                    boxShadow="0px 2px 3px rgba(0, 0, 0, 0.15)"
+                    mb="2"
+                    onClick={handleVerify}
+                  >
+                    <Text fontSize="12px" fontWeight="extrabold" color="white">
+                      Verify
+                    </Text>
+                  </Button>
+                </Box>
 
-                    <Img
-                      src="./assets/not-verificado-logo.png"
-                      w={20}
-                      pr="20px"
-                    />
-                  </HStack>
-                ) : (
-                  <HStack>
-                    <Box width="80%">
-                      <Text
-                        fontSize="20px"
-                        fontWeight="bold"
-                        color="#7E7E7E"
-                        p="3"
-                      >
-                        You have verified {userProfile.name}
-                      </Text>
-                    </Box>
-
-                    <Img src="./assets/verificado-logo.png" w={20} pr="20px" />
-                  </HStack>
-                )}
-              </>
-            )}
-
-            {transition.submission && (
+                <Img src="./assets/not-verificado-logo.png" w={20} pr="20px" />
+              </HStack>
+            ) : (
               <HStack>
                 <Box width="80%">
                   <Text fontSize="20px" fontWeight="bold" color="#7E7E7E" p="3">
@@ -426,16 +370,38 @@ export default function Profile() {
                   </Text>
                 </Box>
 
-                <Center>
-                  <Img src="./assets/not-verificado-logo.png" />
-                </Center>
+                <Img src="./assets/verificado-logo.png" w={20} pr="20px" />
               </HStack>
             )}
           </Box>
+
+          <Link to="/dashboard">
+            <Center>
+              <Box
+                bgGradient="linear(to-l, poapDark, pink.500)"
+                roundedTop="30px"
+                bottom="0"
+                position="fixed"
+                width="80%"
+                height="50px"
+                my="auto"
+              >
+                <Text
+                  textAlign="center"
+                  color="white"
+                  fontSize="20px"
+                  fontWeight="bold"
+                  pt="8px"
+                >
+                  Home
+                </Text>
+              </Box>
+            </Center>
+          </Link>
         </>
       )}
 
-      {transition.state === "loading" && (
+      {transition.state === "loading" && !transition.submission && (
         <Box mt="10">
           <Text
             textAlign="center"
@@ -453,6 +419,189 @@ export default function Profile() {
             </Box>
           </Center>
         </Box>
+      )}
+
+      {transition.submission && (
+        <>
+          <Box>
+            <Center mt="60px">
+              <Flex mt="-60px">
+                <Box mt="70px" mr="20px">
+                  <Text
+                    textAlign="center"
+                    fontSize="24px"
+                    fontWeight="bold"
+                    color="black"
+                  >
+                    {userProfile.stats.totalFollowers}
+                  </Text>
+                  <Text fontSize="16px" fontWeight="bold" color="#6F6F6F">
+                    Followers
+                  </Text>
+                </Box>
+
+                <Box position="relative" display="inline-flex">
+                  <CircularProgress
+                    value={indexVm + arrLength}
+                    size="150px"
+                    color="gradient1"
+                    thickness="8px"
+                  />
+
+                  <Box
+                    top={0}
+                    left={0}
+                    bottom={0}
+                    right={0}
+                    position="absolute"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    {userProfile.picture?.original && (
+                      <Avatar
+                        size="xl"
+                        src={transformToIpfsUrl(
+                          userProfile.picture?.original?.url
+                        )}
+                      />
+                    )}
+
+                    {userProfile.picture?.uri && (
+                      <Avatar
+                        size="xl"
+                        src={transformToIpfsUrl(userProfile.picture?.uri)}
+                      />
+                    )}
+
+                    {!userProfile.picture?.original &&
+                      !userProfile.picture?.uri && (
+                        <Avatar
+                          size="xl"
+                          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT29B69wuAtANWIv19S-HrkYOGdUqbwnVpcTDjCoovLPA&s"
+                        />
+                      )}
+                  </Box>
+                </Box>
+
+                <Box mt="70px" ml="20px">
+                  <Text
+                    textAlign="center"
+                    fontSize="24px"
+                    fontWeight="bold"
+                    color="black"
+                  >
+                    {userProfile.stats.totalFollowing}
+                  </Text>
+
+                  <Text fontSize="16px" fontWeight="bold" color="#6F6F6F">
+                    Following
+                  </Text>
+                </Box>
+              </Flex>
+            </Center>
+
+            <Box>
+              <Text
+                textAlign="center"
+                fontSize="30px"
+                fontWeight="bold"
+                color="black"
+              >
+                {userProfile.name}
+              </Text>
+
+              <Text
+                textAlign="center"
+                fontSize="15px"
+                fontWeight="bold"
+                bgGradient="linear(to-l, gradient1, gradient2)"
+                bgClip="text"
+                pb="2"
+              >
+                @{userProfile.handle}
+              </Text>
+            </Box>
+          </Box>
+
+          <Center>
+            <Divider borderWidth={1} width="80%" />
+          </Center>
+
+          <Center pt="5">
+            <HStack justifyItems={"center"}>
+              <Text fontSize="16px" fontWeight="light" color="#666666">
+                Shared Poaps
+              </Text>
+
+              <Img src="../assets/poap-logo.png" w={10} />
+            </HStack>
+          </Center>
+
+          <PoapContainer arr={common} length={arrLength} diff={arrDiff} />
+
+          {common.length === 0 && (
+            <>
+              <Text
+                textAlign="center"
+                fontSize="18px"
+                fontWeight="bold"
+                color="#666666"
+              >
+                Nothing here
+              </Text>
+
+              <Text
+                textAlign="center"
+                fontSize="14px"
+                fontWeight="light"
+                color="#666666"
+              >
+                You should share a POAP with this user
+              </Text>
+            </>
+          )}
+
+          <Center mt="5">
+            <Divider borderWidth={1} width="80%" />
+          </Center>
+
+          <Box mt="3">
+            <HStack>
+              <Box width="80%">
+                <Text fontSize="20px" fontWeight="bold" color="#7E7E7E" p="3">
+                  You have verified {userProfile.name}
+                </Text>
+              </Box>
+
+              <Img src="../verificado-logo.png" w={20} pr="20px" />
+            </HStack>
+          </Box>
+
+          <Link to="/dashboard">
+            <Center>
+              <Box
+                bgGradient="linear(to-l, poapDark, pink.500)"
+                roundedTop="30px"
+                bottom="0"
+                position="fixed"
+                width="80%"
+                height="50px"
+                my="auto"
+              >
+                <Text
+                  textAlign="center"
+                  color="white"
+                  fontSize="20px"
+                  fontWeight="bold"
+                  pt="8px"
+                >
+                  Home
+                </Text>
+              </Box>
+            </Center>
+          </Link>
+        </>
       )}
     </Box>
   );
@@ -496,7 +645,7 @@ export function ErrorBoundary({ error }: any) {
         >
           <Link to="/dashboard">
             <Flex alignItems="center">
-              <Icon color="black" as={FaArrowLeft} />
+              <Icon color="black" as={AiFillHome} />
               <Text
                 color="black"
                 fontWeight={700}
