@@ -249,24 +249,29 @@ export default function Profile() {
                     alignItems="center"
                     justifyContent="center"
                   >
-                    {userProfile.picture.original ? (
+                    {userProfile.picture?.original && (
                       <Avatar
                         size="xl"
                         src={transformToIpfsUrl(
                           userProfile.picture?.original?.url
                         )}
                       />
-                    ) : userProfile.picture.uri ? (
+                    )}
+
+                    {userProfile.picture?.uri && (
                       <Avatar
                         size="xl"
                         src={transformToIpfsUrl(userProfile.picture?.uri)}
                       />
-                    ) : (
-                      <Avatar
-                        size="xl"
-                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT29B69wuAtANWIv19S-HrkYOGdUqbwnVpcTDjCoovLPA&s"
-                      />
                     )}
+
+                    {!userProfile.picture?.original &&
+                      !userProfile.picture?.uri && (
+                        <Avatar
+                          size="xl"
+                          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT29B69wuAtANWIv19S-HrkYOGdUqbwnVpcTDjCoovLPA&s"
+                        />
+                      )}
                   </Box>
                 </Box>
                 <Box mt="70px" ml="20px">
@@ -392,8 +397,6 @@ export default function Profile() {
                       src="./assets/not-verificado-logo.png"
                       w={20}
                       pr="20px"
-                      // width="50%"
-                      // height="50%"
                     />
                   </HStack>
                 ) : (

@@ -100,7 +100,7 @@ export const action: ActionFunction = async ({ request }) => {
   const profileToGo = form.get("profileToGo");
 
   if (intent === "search") {
-    return redirect(`/${profileToGo}`);
+    return redirect(`/${profileToGo}.lens`);
   }
 
   if (!address || typeof address !== "string") return null;
