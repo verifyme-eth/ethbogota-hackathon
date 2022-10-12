@@ -55,6 +55,8 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 
   const userProfile = response.profile;
 
+  console.log(userProfile);
+
   // Get poaps shared
   const { common, arrLength, arrDiff } = await comparePoaps(
     address,
@@ -189,6 +191,8 @@ export default function Profile() {
     });
   };
 
+  console.log(userProfile);
+
   return (
     <Box pt="20px">
       <Link to={"/dashboard"}>
@@ -245,12 +249,17 @@ export default function Profile() {
                     alignItems="center"
                     justifyContent="center"
                   >
-                    {userProfile.picture ? (
+                    {userProfile.picture.original ? (
                       <Avatar
                         size="xl"
                         src={transformToIpfsUrl(
                           userProfile.picture?.original?.url
                         )}
+                      />
+                    ) : userProfile.picture.uri ? (
+                      <Avatar
+                        size="xl"
+                        src={transformToIpfsUrl(userProfile.picture?.uri)}
                       />
                     ) : (
                       <Avatar
