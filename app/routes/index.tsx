@@ -141,23 +141,21 @@ export default function Index() {
                     boxShadow="0px 0px 10px rgba(0, 0, 0, 0.1)"
                   >
                     <Center paddingTop={5}>
-                      <Link to="/login">
-                        <Button
-                          bgGradient="linear(to-l, poapDark, pink.500)"
-                          color="white"
-                          borderRadius={"70px"}
-                          boxShadow="0px 2px 3px rgba(0, 0, 0, 0.15)"
-                          onClick={handleLoginWalletConnect}
+                      <Button
+                        bgGradient="linear(to-l, poapDark, pink.500)"
+                        color="white"
+                        borderRadius={"70px"}
+                        boxShadow="0px 2px 3px rgba(0, 0, 0, 0.15)"
+                        onClick={handleLoginWalletConnect}
+                      >
+                        <Text
+                          fontWeight={500}
+                          fontSize={"18px"}
+                          lineHeight={"21.6px"}
                         >
-                          <Text
-                            fontWeight={500}
-                            fontSize={"18px"}
-                            lineHeight={"21.6px"}
-                          >
-                            Connect your wallet
-                          </Text>
-                        </Button>
-                      </Link>
+                          Connect your wallet
+                        </Text>
+                      </Button>
                     </Center>
 
                     <HStack margin={"auto"} paddingTop={5}>

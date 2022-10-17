@@ -183,7 +183,7 @@ export default function Profile() {
       action: `${userProfile.handle}/?index`,
       method: "post",
       encType: "application/x-www-form-urlencoded",
-      // replace: true,
+      replace: true,
     });
   };
 
@@ -353,6 +353,7 @@ export default function Profile() {
                     boxShadow="0px 2px 3px rgba(0, 0, 0, 0.15)"
                     mb="2"
                     onClick={handleVerify}
+                    disabled={common.length === 0}
                   >
                     <Text fontSize="12px" fontWeight="extrabold" color="white">
                       Verify
@@ -528,7 +529,7 @@ export default function Profile() {
             <Divider borderWidth={1} width="80%" />
           </Center>
 
-          <Center pt="5">
+          <Center pt="2">
             <HStack justifyItems={"center"}>
               <Text fontSize="16px" fontWeight="light" color="#666666">
                 Shared Poaps
