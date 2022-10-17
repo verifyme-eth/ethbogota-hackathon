@@ -1,11 +1,6 @@
 // BFF elements
 import type { LoaderFunction } from "@remix-run/node";
-import {
-  Link,
-  useLoaderData,
-  useSubmit,
-  useTransition,
-} from "@remix-run/react";
+import { useLoaderData, useSubmit, useTransition } from "@remix-run/react";
 
 import { db } from "~/utils/db.server";
 
