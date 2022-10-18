@@ -77,10 +77,10 @@ export async function standardSignMessage(
   message: string
 ) {
   // encode message (hex)
-  const hexMesg = convertUtf8ToHex(message);
+  // const hexMesg = convertUtf8ToHex(message);
 
   // eth_sign params
-  const msgParams = [address, hexMesg];
+  const msgParams = [address, message];
 
   try {
     // send message
@@ -93,6 +93,50 @@ export async function standardSignMessage(
     // // format displayed result
     // const formattedResult = {
     //   method: "eth_sign (standard)",
+    //   address,
+    //   valid,
+    //   result,
+    // };
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function personalSignMessage(
+  connector: WalletConnect,
+  address: string,
+  message: string
+) {
+  // encode message (hex)
+  const hexMesg = convertUtf8ToHex(message);
+
+  // personal_sign params
+  const msgParams = [hexMesg, address];
+
+  try {
+    // send message
+    const result = await connector.signPersonalMessage(msgParams);
+
+    // verify signature
+    const hash = hashMessage(message);
+
+    // const valid = await verifySignature(address, result, hash, "0x89");
+
+    console.log(result);
+    console.log(hash);
+
+    // format displayed result
+    const formattedResult = {
+      method: "personal_sign",
+      address,
+      result,
+    };
+
+    return formattedResult;
+
+    // // format displayed result
+    // const formattedResult = {
+    //   method: "personal_sign (personal)",
     //   address,
     //   valid,
     //   result,
