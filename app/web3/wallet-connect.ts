@@ -2,6 +2,9 @@ import type { SubmitFunction } from "@remix-run/react";
 
 import type WalletConnect from "@walletconnect/client";
 import type { IInternalEvent } from "@walletconnect/types";
+import { convertUtf8ToHex } from "@walletconnect/utils";
+
+import { hashMessage } from "ethers/lib/utils";
 
 function onConnect(payload: IInternalEvent): string {
   const { accounts } = payload.params[0];
@@ -66,4 +69,35 @@ export async function subscribeToEvents(
 
     console.log("disconnect", payload);
   });
+}
+
+export async function standardSignMessage(
+  connector: WalletConnect,
+  address: string,
+  message: string
+) {
+  // encode message (hex)
+  const hexMesg = convertUtf8ToHex(message);
+
+  // eth_sign params
+  const msgParams = [address, hexMesg];
+
+  try {
+    // send message
+    const result = await connector.signMessage(msgParams);
+
+    // verify signature
+    const hash = hashMessage(message);
+    // const valid = await verifySignature(address, result, hash, chainId);
+
+    // // format displayed result
+    // const formattedResult = {
+    //   method: "eth_sign (standard)",
+    //   address,
+    //   valid,
+    //   result,
+    // };
+  } catch (error) {
+    console.error(error);
+  }
 }

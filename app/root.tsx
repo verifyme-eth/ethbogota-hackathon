@@ -31,16 +31,6 @@ export const meta: MetaFunction = () => ({
   "og:image": "./assets/portada3.png",
 });
 
-export let links: LinksFunction = () => {
-  return [
-    {
-      rel: "icon",
-      href: "/verrifyme-logo.png",
-      type: "image",
-    },
-  ];
-};
-
 interface DocumentProps {
   children: React.ReactNode;
 }
