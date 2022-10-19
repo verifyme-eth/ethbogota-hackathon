@@ -11,7 +11,7 @@ import { AiFillHome } from "react-icons/ai";
 
 import { GraphQLClient } from "graphql-request";
 
-import { GetProfile } from "~/web3/lens-api";
+import { GetProfile } from "~/web3/lens/lens-api";
 import { comparePoaps } from "~/web3/poap";
 import { transformToIpfsUrl } from "~/web3/ipfs";
 
