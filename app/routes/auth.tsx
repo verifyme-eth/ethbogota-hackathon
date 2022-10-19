@@ -5,7 +5,7 @@ import { GraphQLClient } from "graphql-request";
 import { getSession } from "~/bff/session";
 
 import LensAuth from "~/components/LensButton";
-import { GetChallengue } from "~/web3/lens";
+import { GetChallengue } from "~/web3/lens-api";
 
 export const loader: LoaderFunction = async ({ request }) => {
   // Get address from cookie session

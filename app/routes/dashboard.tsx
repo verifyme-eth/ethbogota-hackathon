@@ -9,7 +9,7 @@ import {
 
 import { GraphQLClient } from "graphql-request";
 
-import { ExplorePublications, GetDefaultProfile } from "~/web3/lens";
+import { ExplorePublications, GetDefaultProfile } from "~/web3/lens-api";
 
 import { db } from "~/utils/db.server";
 import { destroySession, getSession } from "~/bff/session";
