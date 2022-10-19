@@ -1,8 +1,8 @@
 import { GraphQLClient } from "graphql-request";
 
 import { getAddressFromSigner } from "../ethers.service";
-import { CreateFollowDataType } from "./lens-api";
 
+import { CreateFollowDataType } from "./lens-api";
 import type { FollowRequest } from "./lens-api.types";
 
 async function createFollowTypedData(profileId: string, accessToken: string) {

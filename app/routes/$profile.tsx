@@ -19,6 +19,13 @@ import { db } from "~/utils/db.server";
 
 import { getSession } from "~/bff/session";
 
+import { createFollowTypedData } from "~/web3/lens/follow";
+import {
+  getAddressFromSigner,
+  signedTypeData,
+  splitSignature,
+} from "~/web3/ethers.service";
+
 import {
   Avatar,
   Box,
@@ -35,8 +42,7 @@ import {
 } from "@chakra-ui/react";
 
 import PoapContainer from "~/components/PoapContainer";
-import { createFollowTypedData } from "~/web3/lens/follow";
-import { signedTypeData } from "~/web3/ethers.service";
+import { lensHub } from "~/web3/lens/lens-hub";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
   // Get address from cookie session
@@ -173,13 +179,31 @@ export const action: ActionFunction = async ({ request }) => {
 
     const followTypeData = followDataResponse.createFollowTypedData;
 
-    const signature = await signedTypeData(
-      followTypeData.domain,
-      followTypeData.types,
-      followTypeData.value
-    );
+    const typedData = followTypeData.typedData;
 
-    console.log(signature);
+    console.log("follow: typedData", typedData);
+
+    const signature = await signedTypeData(
+      typedData.domain,
+      typedData.types,
+      typedData.value
+    );
+    console.log("follow: signature", signature);
+
+    const { v, r, s } = splitSignature(signature);
+
+    const tx = await lensHub.followWithSig({
+      follower: getAddressFromSigner(),
+      profileIds: typedData.value.profileIds,
+      datas: typedData.value.datas,
+      sig: {
+        v,
+        r,
+        s,
+        deadline: typedData.value.deadline,
+      },
+    });
+    console.log("follow: tx hash", tx.hash);
 
     return redirect(request.url);
   }
