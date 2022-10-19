@@ -4,6 +4,7 @@ import QRCodeModal from "@walletconnect/qrcode-modal";
 import { personalSignMessage } from "~/web3/wallet-connect";
 
 import { Button, Center, Text } from "@chakra-ui/react";
+import { useSubmit } from "@remix-run/react";
 
 type LensAuthProps = {
   address: string;
@@ -11,6 +12,8 @@ type LensAuthProps = {
 };
 
 export default function LensAuth({ address, challengeText }: LensAuthProps) {
+  const submit = useSubmit();
+
   const handleSignChallengeText = async () => {
     // bridge url
     const bridge = "https://bridge.walletconnect.org";
@@ -21,7 +24,22 @@ export default function LensAuth({ address, challengeText }: LensAuthProps) {
       qrcodeModal: QRCodeModal,
     });
 
-    await personalSignMessage(connector, address, challengeText);
+    const formatedResult = await personalSignMessage(
+      connector,
+      address,
+      challengeText
+    );
+
+    const formData = new FormData();
+
+    formData.append("signature", formatedResult?.signature);
+
+    submit(formData, {
+      action: "/auth/?index",
+      method: "post",
+      encType: "application/x-www-form-urlencoded",
+      replace: true,
+    });
   };
 
   return (

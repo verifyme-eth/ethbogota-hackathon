@@ -35,6 +35,8 @@ import {
 } from "@chakra-ui/react";
 
 import PoapContainer from "~/components/PoapContainer";
+import { createFollowTypedData } from "~/web3/lens/follow";
+import { signedTypeData } from "~/web3/ethers.service";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
   // Get address from cookie session
@@ -102,6 +104,11 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 };
 
 export const action: ActionFunction = async ({ request }) => {
+  // Get address from cookie session
+  const session = await getSession(request.headers.get("Cookie"));
+
+  const accessToken = session.get("accessToken");
+
   const form = await request.formData();
 
   const address = form.get("address");
@@ -109,12 +116,16 @@ export const action: ActionFunction = async ({ request }) => {
   const poaps = form.get("poaps");
   const intent = form.get("intent");
 
-  if (!address || typeof address !== "string") return null;
-  if (!profileAddress || typeof profileAddress !== "string") return null;
-  if (!poaps || typeof poaps !== "string") return null;
-  if (!intent || typeof intent !== "string") return null;
+  // if (!address || typeof address !== "string") return null;
+  // if (!profileAddress || typeof profileAddress !== "string") return null;
+  // if (!poaps || typeof poaps !== "string") return null;
+  // if (!intent || typeof intent !== "string") return null;
 
   if (intent == "verify") {
+    if (!address || typeof address !== "string") return null;
+
+    if (!profileAddress || typeof profileAddress !== "string") return null;
+
     const verified = await db.verified.findUnique({
       where: {
         address: profileAddress.toLowerCase(),
@@ -146,6 +157,31 @@ export const action: ActionFunction = async ({ request }) => {
         },
       });
     }
+  }
+
+  if (intent == "follow") {
+    const address = form.get("address");
+    const profileId = form.get("profileId");
+
+    if (!address || typeof address !== "string") return null;
+    if (!profileId || typeof profileId !== "string") return null;
+
+    const followDataResponse = await createFollowTypedData(
+      profileId,
+      accessToken
+    );
+
+    const followTypeData = followDataResponse.createFollowTypedData;
+
+    const signature = await signedTypeData(
+      followTypeData.domain,
+      followTypeData.types,
+      followTypeData.value
+    );
+
+    console.log(signature);
+
+    return redirect(request.url);
   }
 
   //remove the last / from string
@@ -181,6 +217,21 @@ export default function Profile() {
 
     submit(formData, {
       action: `${userProfile.handle}/?index`,
+      method: "post",
+      encType: "application/x-www-form-urlencoded",
+      replace: true,
+    });
+  };
+
+  const handleFollow = async () => {
+    const formData = new FormData();
+
+    formData.append("address", address);
+    formData.append("profileId", userProfile.id);
+    formData.append("intent", "follow");
+
+    submit(formData, {
+      action: `${userProfile.handle}`,
       method: "post",
       encType: "application/x-www-form-urlencoded",
       replace: true,
@@ -290,6 +341,19 @@ export default function Profile() {
                 @{userProfile.handle}
               </Text>
             </Box>
+
+            <Center>
+              <Button
+                bg="lens"
+                color="lensDark"
+                borderRadius="10px"
+                boxShadow="0px 2px 3px rgba(0, 0, 0, 0.15)"
+                mb="2"
+                onClick={handleFollow}
+              >
+                Follow
+              </Button>
+            </Center>
           </Box>
 
           <Center>

@@ -115,32 +115,16 @@ export async function personalSignMessage(
 
   try {
     // send message
-    const result = await connector.signPersonalMessage(msgParams);
-
-    // verify signature
-    const hash = hashMessage(message);
-
-    // const valid = await verifySignature(address, result, hash, "0x89");
-
-    console.log(result);
-    console.log(hash);
+    const signature = await connector.signPersonalMessage(msgParams);
 
     // format displayed result
     const formattedResult = {
       method: "personal_sign",
-      address,
-      result,
+      address: address,
+      signature: signature,
     };
 
     return formattedResult;
-
-    // // format displayed result
-    // const formattedResult = {
-    //   method: "personal_sign (personal)",
-    //   address,
-    //   valid,
-    //   result,
-    // };
   } catch (error) {
     console.error(error);
   }

@@ -14,6 +14,15 @@ const GetChallengue = gql`
   }
 `;
 
+const Authenticate = gql`
+  mutation ($request: SignedAuthChallenge!) {
+    authenticate(request: $request) {
+      accessToken
+      refreshToken
+    }
+  }
+`;
+
 const ExplorePublications = gql`
   query ExplorePublications {
     explorePublications(
@@ -682,6 +691,7 @@ const CreateFollowDataType = gql`
 export {
   GetPing,
   GetChallengue,
+  Authenticate,
   ExplorePublications,
   GetProfile,
   GetDefaultProfile,

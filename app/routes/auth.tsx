@@ -1,17 +1,25 @@
-import type { LoaderFunction } from "@remix-run/node";
+import type { ActionFunction, LoaderFunction } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { GraphQLClient } from "graphql-request";
 
-import { getSession } from "~/bff/session";
+import { GraphQLClient } from "graphql-request";
+import { GetChallengue } from "~/web3/lens/lens-api";
+
+import { commitSession, getSession } from "~/bff/session";
+
+import authenticateInLens from "~/web3/lens/authenticate";
+import type { AuthenticationResult } from "~/web3/lens/lens-api.response";
 
 import LensAuth from "~/components/LensButton";
-import { GetChallengue } from "~/web3/lens/lens-api";
+import { Box, Text } from "@chakra-ui/react";
 
 export const loader: LoaderFunction = async ({ request }) => {
   // Get address from cookie session
   const session = await getSession(request.headers.get("Cookie"));
 
   const addressSession = session.get("address");
+  const accessToken = session.get("accessToken");
+  const refreshToken = session.get("refreshToken");
 
   // Start challenge with Lens API
   const lens = new GraphQLClient("https://api.lens.dev/playground");
@@ -25,13 +33,49 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   const challengeText = challengeResponse.challenge.text;
 
-  return { challengeText, addressSession };
+  let authenticated = false;
+
+  if (!accessToken && !refreshToken) {
+    authenticated = true;
+  }
+
+  return { challengeText, addressSession, authenticated };
+};
+
+export const action: ActionFunction = async ({ request }) => {
+  const session = await getSession(request.headers.get("Cookie"));
+
+  const address = session.get("address");
+
+  const form = await request.formData();
+
+  const signature = form.get("signature");
+
+  if (!signature || typeof signature !== "string") return null;
+
+  const authResponse: AuthenticationResult = await authenticateInLens(
+    address,
+    signature
+  );
+
+  session.set("accessToken", authResponse.authenticate.accessToken);
+  session.set("refreshToken", authResponse.authenticate.refreshToken);
+
+  return redirect(`/auth`, {
+    headers: {
+      "Set-Cookie": await commitSession(session),
+    },
+  });
 };
 
 export default function Auth() {
-  const { addressSession, challengeText } = useLoaderData();
+  const { addressSession, challengeText, authenticated } = useLoaderData();
 
-  console.log("[auth] challengeText:", challengeText);
-
-  return <LensAuth address={addressSession} challengeText={challengeText} />;
+  return authenticated ? (
+    <LensAuth address={addressSession} challengeText={challengeText} />
+  ) : (
+    <Box>
+      <Text> Estas autenticado </Text>
+    </Box>
+  );
 }

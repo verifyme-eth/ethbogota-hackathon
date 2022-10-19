@@ -1,7 +1,12 @@
-type FollowRequest = {
+export type FollowRequest = {
   request: {
     follow: [{ profile: string }];
   };
 };
 
-export default FollowRequest;
+export type SignedAuthChallenge = {
+  request: {
+    address: string;
+    signature: string;
+  };
+};
