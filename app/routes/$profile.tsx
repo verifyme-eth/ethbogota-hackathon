@@ -104,14 +104,14 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   }
 
   // Get typed data for follow
-  const followDataResponse = await createFollowTypedData(
-    userProfile.id,
-    accessToken
-  );
+  // const followDataResponse = await createFollowTypedData(
+  //   userProfile.id,
+  //   accessToken
+  // );
 
-  const followTypeData = followDataResponse.createFollowTypedData;
+  // const followTypeData = followDataResponse.createFollowTypedData;
 
-  const typedData = followTypeData.typedData;
+  // const typedData = followTypeData.typedData;
 
   // console.log("follow: typedData", typedData);
 
@@ -123,7 +123,6 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     arrDiff,
     indexVm,
     verifiedForUser,
-    typedData,
   };
 };
 
@@ -269,18 +268,6 @@ export default function Profile() {
   };
 
   const handleFollow = async () => {
-    // const formData = new FormData();
-
-    // formData.append("address", address);
-    // formData.append("profileId", userProfile.id);
-    // formData.append("intent", "follow");
-
-    // submit(formData, {
-    //   action: `${userProfile.handle}`,
-    //   method: "post",
-    //   encType: "application/x-www-form-urlencoded",
-    //   replace: true,
-    // });
     // bridge url
     const bridge = "https://bridge.walletconnect.org";
 
@@ -403,7 +390,7 @@ export default function Profile() {
               </Text>
             </Box>
 
-            <Center>
+            {/* <Center>
               <Button
                 bg="lens"
                 color="lensDark"
@@ -414,91 +401,111 @@ export default function Profile() {
               >
                 Follow
               </Button>
-            </Center>
+            </Center> */}
           </Box>
 
-          <Center>
-            <Divider borderWidth={1} width="80%" />
-          </Center>
+          <Box maxWidth="600px" m="auto">
+            <Center pt={["10px", "20px", "50px", "50px"]}>
+              <Divider borderWidth={1} width="80%" />
+            </Center>
 
-          <Center pt="2">
-            <HStack justifyItems={"center"}>
-              <Text fontSize="16px" fontWeight="light" color="#666666">
-                Shared Poaps
-              </Text>
+            <Center pt="2">
+              <HStack justifyItems={"center"}>
+                <Text fontSize="16px" fontWeight="light" color="#666666">
+                  Shared Poaps
+                </Text>
 
-              <Img src="./assets/poap-logo.png" w={10} />
-            </HStack>
-          </Center>
-
-          <PoapContainer arr={common} length={arrLength} diff={arrDiff} />
-
-          {common.length === 0 && (
-            <>
-              <Text
-                textAlign="center"
-                fontSize="18px"
-                fontWeight="bold"
-                color="#666666"
-              >
-                Nothing here
-              </Text>
-
-              <Text
-                textAlign="center"
-                fontSize="14px"
-                fontWeight="light"
-                color="#666666"
-              >
-                You should share a POAP with this user
-              </Text>
-            </>
-          )}
-
-          <Center mt="5">
-            <Divider borderWidth={1} width="80%" />
-          </Center>
-
-          <Box mt="3">
-            {!verifiedForUser ? (
-              <HStack>
-                <Box width="50%" m="auto" pt="4">
-                  <Text fontSize="20px" fontWeight="bold" color="#7E7E7E">
-                    {userProfile.name}
-                  </Text>
-
-                  <Text fontSize="12px" fontWeight="bold" color="#7E7E7E" p="1">
-                    needs your verification
-                  </Text>
-
-                  <Button
-                    bgGradient="linear(to-l, poapDark, pink.500)"
-                    color="white"
-                    borderRadius={"70px"}
-                    boxShadow="0px 2px 3px rgba(0, 0, 0, 0.15)"
-                    mb="2"
-                    onClick={handleVerify}
-                    disabled={common.length === 0}
-                  >
-                    <Text fontSize="12px" fontWeight="extrabold" color="white">
-                      Verify
-                    </Text>
-                  </Button>
-                </Box>
-
-                <Img src="./assets/not-verificado-logo.png" w={20} pr="20px" />
+                <Img src="./assets/poap-logo.png" w={10} />
               </HStack>
-            ) : (
-              <HStack>
-                <Box width="80%">
-                  <Text fontSize="20px" fontWeight="bold" color="#7E7E7E" p="3">
-                    You have verified {userProfile.name}
-                  </Text>
-                </Box>
+            </Center>
 
-                <Img src="./assets/verificado-logo.png" w={20} pr="20px" />
-              </HStack>
+            <PoapContainer arr={common} length={arrLength} diff={arrDiff} />
+
+            {common.length === 0 && (
+              <>
+                <Text
+                  textAlign="center"
+                  fontSize="18px"
+                  fontWeight="bold"
+                  color="#666666"
+                >
+                  Nothing here
+                </Text>
+
+                <Text
+                  textAlign="center"
+                  fontSize="14px"
+                  fontWeight="light"
+                  color="#666666"
+                >
+                  You should share a POAP with this user
+                </Text>
+              </>
             )}
+
+            <Center mt="5">
+              <Divider borderWidth={1} width="80%" />
+            </Center>
+
+            <Box mt="3">
+              {!verifiedForUser ? (
+                <HStack>
+                  <Box width="50%" m="auto" pt="4">
+                    <Text fontSize="20px" fontWeight="bold" color="#7E7E7E">
+                      {userProfile.name}
+                    </Text>
+
+                    <Text
+                      fontSize="12px"
+                      fontWeight="bold"
+                      color="#7E7E7E"
+                      p="1"
+                    >
+                      needs your verification
+                    </Text>
+
+                    <Button
+                      bgGradient="linear(to-l, poapDark, pink.500)"
+                      color="white"
+                      borderRadius={"70px"}
+                      boxShadow="0px 2px 3px rgba(0, 0, 0, 0.15)"
+                      mb="2"
+                      onClick={handleVerify}
+                      disabled={common.length === 0}
+                    >
+                      <Text
+                        fontSize="12px"
+                        fontWeight="extrabold"
+                        color="white"
+                      >
+                        Verify
+                      </Text>
+                    </Button>
+                  </Box>
+
+                  <Img
+                    src="./assets/not-verificado-logo.png"
+                    w={20}
+                    pr="20px"
+                  />
+                </HStack>
+              ) : (
+                <HStack>
+                  <Box width="80%">
+                    <Text
+                      fontSize="20px"
+                      fontWeight="bold"
+                      color="#7E7E7E"
+                      p="3"
+                    >
+                      You have verified {userProfile.name}
+                    </Text>
+                  </Box>
+
+                  <Img src="./assets/verificado-logo.png" w={20} pr="20px" />
+                </HStack>
+              )}
+            </Box>
           </Box>
 
           <Link to="/dashboard">
