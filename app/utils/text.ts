@@ -17,3 +17,8 @@ export function deleteLinks(content: string) {
     return ``;
   });
 }
+
+// delete .lens from string
+export function deleteLens(content: string) {
+  return content?.replace(".lens", "");
+}
