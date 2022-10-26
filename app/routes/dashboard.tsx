@@ -31,6 +31,7 @@ import {
   Button,
   Img,
   Link as ChakraLink,
+  SimpleGrid,
 } from "@chakra-ui/react";
 
 import { AiOutlineSearch } from "react-icons/ai";
@@ -261,7 +262,7 @@ export default function Dashboard() {
                   value={value}
                   onChange={handleChange}
                   placeholder="Find your friends"
-                  borderRadius={20}
+                  borderRadius="10"
                   backgroundColor="#E3E3E4"
                 />
               </Box>
@@ -272,65 +273,67 @@ export default function Dashboard() {
             </HStack>
           </Box>
 
-          {recentsPosts.items.map((post: any) => (
-            <Box key={post.id}>
-              <Divider borderWidth={1} />
+          <SimpleGrid columns={[1, 2, 2, 2]} spacing={10}>
+            {recentsPosts.items.map((post: any) => (
+              <Box key={post.id}>
+                <Divider borderWidth={1} />
 
-              <Box ml="20px" mt="20px">
-                <HStack>
-                  <Link to={`/${post.profile?.handle}`}>
+                <Box ml="20px" mt="20px" mr="20px">
+                  <HStack>
+                    <Link to={`/${post.profile?.handle}`}>
+                      <Box>
+                        {post.profile.picture?.original?.url ? (
+                          <Avatar
+                            size="md"
+                            src={transformToIpfsUrl(
+                              post.profile?.picture?.original?.url
+                            )}
+                          />
+                        ) : (
+                          <Avatar
+                            size="md"
+                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT29B69wuAtANWIv19S-HrkYOGdUqbwnVpcTDjCoovLPA&s"
+                          />
+                        )}
+                      </Box>
+                    </Link>
+
+                    <Link to={`/${post.profile?.handle}`} prefetch="intent">
+                      <Stack>
+                        <Text>{post.profile.name}</Text>
+                        <Text
+                          bgGradient="linear(to-l, gradient1, gradient2)"
+                          bgClip="text"
+                          fontSize="sm"
+                          fontWeight="600"
+                        >
+                          @{post.profile.handle}
+                        </Text>
+                      </Stack>
+                    </Link>
+
                     <Box>
-                      {post.profile.picture?.original?.url ? (
-                        <Avatar
-                          size="md"
-                          src={transformToIpfsUrl(
-                            post.profile?.picture?.original?.url
-                          )}
-                        />
-                      ) : (
-                        <Avatar
-                          size="md"
-                          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT29B69wuAtANWIv19S-HrkYOGdUqbwnVpcTDjCoovLPA&s"
-                        />
-                      )}
-                    </Box>
-                  </Link>
-
-                  <Link to={`/${post.profile?.handle}`} prefetch="intent">
-                    <Stack>
-                      <Text>{post.profile.name}</Text>
-                      <Text
-                        bgGradient="linear(to-l, gradient1, gradient2)"
-                        bgClip="text"
-                        fontSize="sm"
-                        fontWeight="600"
-                      >
-                        @{post.profile.handle}
+                      <Text ml="130px" color="gray" mb="30px" fontSize="sm">
+                        {calculateHoursBetweenNowAndDate(post?.createdAt)} h
                       </Text>
-                    </Stack>
-                  </Link>
+                    </Box>
+                  </HStack>
 
-                  <Box>
-                    <Text ml="130px" color="gray" mb="30px" fontSize="sm">
-                      {calculateHoursBetweenNowAndDate(post?.createdAt)} h
+                  <Box ml="60px" mt="10px">
+                    <Text
+                      pr="10"
+                      pb="10"
+                      textAlign="justify"
+                      fontSize="16px"
+                      color="#7E7E7E"
+                    >
+                      {resume(post?.metadata?.content)}
                     </Text>
                   </Box>
-                </HStack>
-
-                <Box ml="60px" mt="10px">
-                  <Text
-                    pr="10"
-                    pb="10"
-                    textAlign="justify"
-                    fontSize="16px"
-                    color="#7E7E7E"
-                  >
-                    {resume(post?.metadata?.content)}
-                  </Text>
                 </Box>
               </Box>
-            </Box>
-          ))}
+            ))}
+          </SimpleGrid>
 
           <Center onClick={handleLogout}>
             <Box
