@@ -20,11 +20,11 @@ import { db } from "~/utils/db.server";
 import { getSession } from "~/bff/session";
 
 import { createFollowTypedData } from "~/web3/lens/follow";
-import {
-  getAddressFromSigner,
-  signedTypeData,
-  splitSignature,
-} from "~/web3/ethers.service";
+// import {
+//   getAddressFromSigner,
+//   signedTypeData,
+//   splitSignature,
+// } from "~/web3/ethers.service";
 
 import {
   Avatar,
@@ -42,13 +42,18 @@ import {
 } from "@chakra-ui/react";
 
 import PoapContainer from "~/components/PoapContainer";
-import { lensHub } from "~/web3/lens/lens-hub";
+
+import WalletConnect from "@walletconnect/client";
+import QRCodeModal from "@walletconnect/qrcode-modal";
+
+import { signTypeDataWithWalletConnect } from "~/web3/wallet-connect";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
   // Get address from cookie session
   const session = await getSession(request.headers.get("Cookie"));
 
   const address = session.get("address");
+  const accessToken = session.get("accessToken");
 
   // Get profile from Lens protocol
   const lens = new GraphQLClient("https://api.lens.dev/playground");
@@ -98,6 +103,18 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     verifiedForUser = false;
   }
 
+  // Get typed data for follow
+  const followDataResponse = await createFollowTypedData(
+    userProfile.id,
+    accessToken
+  );
+
+  const followTypeData = followDataResponse.createFollowTypedData;
+
+  const typedData = followTypeData.typedData;
+
+  // console.log("follow: typedData", typedData);
+
   return {
     userProfile,
     address,
@@ -106,6 +123,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     arrDiff,
     indexVm,
     verifiedForUser,
+    typedData,
   };
 };
 
@@ -166,44 +184,46 @@ export const action: ActionFunction = async ({ request }) => {
   }
 
   if (intent == "follow") {
-    const address = form.get("address");
-    const profileId = form.get("profileId");
+    // const address = form.get("address");
+    // const profileId = form.get("profileId");
 
-    if (!address || typeof address !== "string") return null;
-    if (!profileId || typeof profileId !== "string") return null;
+    // if (!address || typeof address !== "string") return null;
+    // if (!profileId || typeof profileId !== "string") return null;
 
-    const followDataResponse = await createFollowTypedData(
-      profileId,
-      accessToken
-    );
+    // const followDataResponse = await createFollowTypedData(
+    //   profileId,
+    //   accessToken
+    // );
 
-    const followTypeData = followDataResponse.createFollowTypedData;
+    // const followTypeData = followDataResponse.createFollowTypedData;
 
-    const typedData = followTypeData.typedData;
+    // const typedData = followTypeData.typedData;
 
-    console.log("follow: typedData", typedData);
+    // console.log("follow: typedData", typedData);
 
-    const signature = await signedTypeData(
-      typedData.domain,
-      typedData.types,
-      typedData.value
-    );
-    console.log("follow: signature", signature);
+    // await SignTypeData(typedData);
 
-    const { v, r, s } = splitSignature(signature);
+    // const signature = await signedTypeData(
+    //   typedData.domain,
+    //   typedData.types,
+    //   typedData.value
+    // );
+    // console.log("follow: signature", signature);
 
-    const tx = await lensHub.followWithSig({
-      follower: getAddressFromSigner(),
-      profileIds: typedData.value.profileIds,
-      datas: typedData.value.datas,
-      sig: {
-        v,
-        r,
-        s,
-        deadline: typedData.value.deadline,
-      },
-    });
-    console.log("follow: tx hash", tx.hash);
+    // const { v, r, s } = splitSignature(signature);
+
+    // const tx = await lensHub.followWithSig({
+    //   follower: getAddressFromSigner(),
+    //   profileIds: typedData.value.profileIds,
+    //   datas: typedData.value.datas,
+    //   sig: {
+    //     v,
+    //     r,
+    //     s,
+    //     deadline: typedData.value.deadline,
+    //   },
+    // });
+    // console.log("follow: tx hash", tx.hash);
 
     return redirect(request.url);
   }
@@ -223,6 +243,7 @@ export default function Profile() {
     arrDiff,
     indexVm,
     verifiedForUser,
+    typedData,
   } = useLoaderData();
 
   const submit = useSubmit();
@@ -248,18 +269,34 @@ export default function Profile() {
   };
 
   const handleFollow = async () => {
-    const formData = new FormData();
+    // const formData = new FormData();
 
-    formData.append("address", address);
-    formData.append("profileId", userProfile.id);
-    formData.append("intent", "follow");
+    // formData.append("address", address);
+    // formData.append("profileId", userProfile.id);
+    // formData.append("intent", "follow");
 
-    submit(formData, {
-      action: `${userProfile.handle}`,
-      method: "post",
-      encType: "application/x-www-form-urlencoded",
-      replace: true,
+    // submit(formData, {
+    //   action: `${userProfile.handle}`,
+    //   method: "post",
+    //   encType: "application/x-www-form-urlencoded",
+    //   replace: true,
+    // });
+    // bridge url
+    const bridge = "https://bridge.walletconnect.org";
+
+    // create new connector
+    const connector: WalletConnect = new WalletConnect({
+      bridge, // Required
+      qrcodeModal: QRCodeModal,
     });
+
+    const signature = await signTypeDataWithWalletConnect(
+      connector,
+      address,
+      typedData
+    );
+
+    console.log(signature);
   };
 
   return (

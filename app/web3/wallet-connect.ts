@@ -129,3 +129,36 @@ export async function personalSignMessage(
     console.error(error);
   }
 }
+
+export async function signTypeDataWithWalletConnect(
+  connector: WalletConnect,
+  address: string,
+  typedData: string
+) {
+  // conso
+
+  console.log("pasa por aca");
+  console.log(typedData);
+
+  // eth_signTypedData params
+  const msgParams = [address, typedData];
+
+  try {
+    // sign typed data
+    console.log("aca se rompoe");
+    const result = await connector.signTypedData(msgParams);
+
+    console.log(result);
+
+    // format displayed result
+    const formattedResult = {
+      method: "eth_signTypedData",
+      address: address,
+      result: result,
+    };
+
+    return formattedResult;
+  } catch (error) {
+    console.error(error);
+  }
+}
